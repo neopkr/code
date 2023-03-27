@@ -38,7 +38,7 @@ electron_1.app.on('ready', () => {
     electron_1.dialog.showOpenDialog({ properties: ['openFile'] }).then(result => {
         if (!result.canceled && result.filePaths.length > 0) {
             const fileContent = fs.readFileSync(result.filePaths[0], 'utf-8');
-            mainWindow.webContents.executeJavaScript(`document.getElementById("editor").value = \`${fileContent}\``);
+            mainWindow.webContents.executeJavaScript(`document.getElementById("editor").value = ${fileContent}`);
         }
     }).catch(err => {
         console.log(err);
