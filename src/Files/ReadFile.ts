@@ -3,6 +3,8 @@ import fs from 'fs'
 import path from 'path'
 import { JSDocument, JSParser } from '../WebContent/JSRenderer'
 
+import { ELogger, getCurrentLine, Logger } from '../Debug/Local'
+
 interface IOpenFile {
     name: string,
     content: string
@@ -12,6 +14,7 @@ const emptyFile: IOpenFile = { name: "", content: "" }
 let currentFile: IOpenFile | undefined
 
 async function ReadFile(mainWindow: BrowserWindow) {
+    Logger({ type: ELogger.Info, void: ReadFile.name, line: getCurrentLine(), comment: "Called Function"})
     try {
         const result = await dialog.showOpenDialog({ properties: ['openFile'] })
         if (!result.canceled && result.filePaths.length > 0) {
@@ -20,7 +23,7 @@ async function ReadFile(mainWindow: BrowserWindow) {
             const current = { name: path.basename(fileName), content: fileContent }
             if (isSameFileOpen(current)) { console.log("File already open"); return }
             currentFile = current
-            JSParser(mainWindow, "./src/renderer.js", `let a = ${JSON.stringify(current.content)};`)
+            WriteOnTextArea(mainWindow, current)
         }
     } catch (err) {
         console.log(err)
@@ -28,7 +31,7 @@ async function ReadFile(mainWindow: BrowserWindow) {
 }
 
 function WriteOnTextArea(mainWindow: BrowserWindow, file: IOpenFile) {
-    JSParser(mainWindow, "./src/renderer.js", `let a = ${JSON.stringify(file.content)};`)
+    JSParser(mainWindow, "./src/renderer.js", `let a = ${JSON.stringify(file.content)};`).catch((err) => console.log(err))
 }
 function ReWriteOnTextArea(mainWindow: BrowserWindow, file: IOpenFile) {
     JSParser(mainWindow, "./src/renderer.js", `let a = ${JSON.stringify(file.content)};`)
@@ -51,7 +54,6 @@ async function GetTextArea(mainWindow: BrowserWindow): Promise<string> {
 }
 
 function isSameFileOpen(newFile: IOpenFile): boolean {
-    console.log(currentFile, newFile)
     return currentFile?.name === newFile.name && currentFile?.content === newFile.content
 }
 

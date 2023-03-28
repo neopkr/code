@@ -7,4 +7,4 @@ function ModifyTextArea(area) {
     $.value = area
 }
 
-$.value = a
+ModifyTextArea(a)

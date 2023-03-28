@@ -21,14 +21,14 @@ function DOMParser_test(content: string, js: string) {
     fs.writeFileSync(js, lines.join('\n'), 'utf-8');
 }
 
-function JSParser(mainWindow: BrowserWindow, path: string, AddContent?: string) {
+async function JSParser(mainWindow: BrowserWindow, path: string, AddContent?: string) {
     if (typeof DOMParser === undefined) {
         const js = fs.readFileSync(path).toString();
-        return mainWindow.webContents.executeJavaScript(js)
+        return await mainWindow.webContents.executeJavaScript(js)
     } else {
         var js = fs.readFileSync(path).toString();
-        js = DOMParser_test(AddContent, js);
-        return mainWindow.webContents.executeJavaScript(js)
+        js = DOMParser(AddContent, js);
+        return await mainWindow.webContents.executeJavaScript(js)
     }
 }
 

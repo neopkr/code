@@ -17,10 +17,12 @@ const electron_1 = require("electron");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const JSRenderer_1 = require("../WebContent/JSRenderer");
+const Local_1 = require("../Debug/Local");
 const emptyFile = { name: "", content: "" };
 let currentFile;
 function ReadFile(mainWindow) {
     return __awaiter(this, void 0, void 0, function* () {
+        (0, Local_1.Logger)({ type: Local_1.ELogger.Info, void: ReadFile.name, line: (0, Local_1.getCurrentLine)(), comment: "Called Function" });
         try {
             const result = yield electron_1.dialog.showOpenDialog({ properties: ['openFile'] });
             if (!result.canceled && result.filePaths.length > 0) {
@@ -32,7 +34,7 @@ function ReadFile(mainWindow) {
                     return;
                 }
                 currentFile = current;
-                (0, JSRenderer_1.JSParser)(mainWindow, "./src/renderer.js", `const a = ${JSON.stringify(current.content)};`);
+                WriteOnTextArea(mainWindow, current);
             }
         }
         catch (err) {
@@ -41,6 +43,12 @@ function ReadFile(mainWindow) {
     });
 }
 exports.ReadFile = ReadFile;
+function WriteOnTextArea(mainWindow, file) {
+    (0, JSRenderer_1.JSParser)(mainWindow, "./src/renderer.js", `let a = ${JSON.stringify(file.content)};`).catch((err) => console.log(err));
+}
+function ReWriteOnTextArea(mainWindow, file) {
+    (0, JSRenderer_1.JSParser)(mainWindow, "./src/renderer.js", `let a = ${JSON.stringify(file.content)};`);
+}
 function CompareFiles(mainWindow) {
     return __awaiter(this, void 0, void 0, function* () {
         const currentTextArea = GetTextArea(mainWindow);
@@ -60,12 +68,17 @@ function GetTextArea(mainWindow) {
     });
 }
 function isSameFileOpen(newFile) {
-    console.log(currentFile, newFile);
     return (currentFile === null || currentFile === void 0 ? void 0 : currentFile.name) === newFile.name && (currentFile === null || currentFile === void 0 ? void 0 : currentFile.content) === newFile.content;
 }
 function saveFile(mainWindow) {
     CompareFiles(mainWindow).then((res) => {
-        console.log(res.valueOf());
+        if (res.valueOf() == true) {
+            return;
+        }
+        else {
+            // PROCESS TO SAVE
+            console.log("Saving...");
+        }
     });
 }
 exports.saveFile = saveFile;
