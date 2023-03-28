@@ -51,11 +51,11 @@ function ReadFile(mainWindow) {
 exports.ReadFile = ReadFile;
 function WriteOnTextArea(mainWindow, file) {
     (0, Local_1.Logger)({ type: Local_1.ELogger.Info, void: WriteOnTextArea.name, line: (0, Local_1.getCurrentLine)(), comment: "Called Function" });
-    (0, JSRenderer_1.JSParser)(mainWindow, "./src/renderer.js", `let a = ${JSON.stringify(file.content)};`).catch((err) => console.log(err));
+    (0, JSRenderer_1.JSParser)(mainWindow, "./src/CodeArea.js", `let a = ${JSON.stringify(file.content)};`).catch((err) => console.log(err));
 }
 function ReWriteOnTextArea(mainWindow, file) {
     (0, Local_1.Logger)({ type: Local_1.ELogger.Info, void: ReWriteOnTextArea.name, line: (0, Local_1.getCurrentLine)(), comment: "Called Function" });
-    (0, JSRenderer_1.JSParser)(mainWindow, "./src/renderer.js", `a = ${JSON.stringify(file.content)};`);
+    (0, JSRenderer_1.JSParser)(mainWindow, "./src/CodeArea.js", `a = ${JSON.stringify(file.content)};`);
 }
 function CompareFiles(mainWindow) {
     return __awaiter(this, void 0, void 0, function* () {

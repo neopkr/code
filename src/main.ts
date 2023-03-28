@@ -4,6 +4,7 @@ import { ReadFile } from './Files/ReadFile';
 import { createMenu } from './Menu/Menu';
 import { ELogger, getCurrentLine, Logger } from './Debug/Local';
 import { JSParser } from './WebContent/JSRenderer';
+import { ObtainFilesInExplorer } from './Files/FileBar';
 
 let mainWindow: BrowserWindow;
 
@@ -25,6 +26,7 @@ app.on('ready', () => {
 
     Logger({ type: ELogger.Info, void: "main", line: getCurrentLine(), comment: "Initializing MenuBar"})
     createMenu(mainWindow)
-    // test
-    ReadFile(mainWindow)
+
+    //test function
+    ObtainFilesInExplorer()
 });

@@ -39,11 +39,11 @@ async function ReadFile(mainWindow: BrowserWindow) {
 
 function WriteOnTextArea(mainWindow: BrowserWindow, file: IOpenFile) {
     Logger({ type: ELogger.Info, void: WriteOnTextArea.name, line: getCurrentLine(), comment: "Called Function"})
-    JSParser(mainWindow, "./src/renderer.js", `let a = ${JSON.stringify(file.content)};`).catch((err) => console.log(err))
+    JSParser(mainWindow, "./src/CodeArea.js", `let a = ${JSON.stringify(file.content)};`).catch((err) => console.log(err))
 }
 function ReWriteOnTextArea(mainWindow: BrowserWindow, file: IOpenFile) {
     Logger({ type: ELogger.Info, void: ReWriteOnTextArea.name, line: getCurrentLine(), comment: "Called Function"})
-    JSParser(mainWindow, "./src/renderer.js", `a = ${JSON.stringify(file.content)};`)
+    JSParser(mainWindow, "./src/CodeArea.js", `a = ${JSON.stringify(file.content)};`)
 }
 
 async function CompareFiles(mainWindow: BrowserWindow): Promise<boolean> {
