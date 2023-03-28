@@ -18,6 +18,7 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const JSRenderer_1 = require("../WebContent/JSRenderer");
 const Local_1 = require("../Debug/Local");
+let canUseWrite = true;
 const emptyFile = { name: "", content: "" };
 let currentFile;
 function ReadFile(mainWindow) {
@@ -34,7 +35,12 @@ function ReadFile(mainWindow) {
                     return;
                 }
                 currentFile = current;
-                WriteOnTextArea(mainWindow, current);
+                if (canUseWrite) {
+                    WriteOnTextArea(mainWindow, current);
+                    canUseWrite = false;
+                    return;
+                }
+                ReWriteOnTextArea(mainWindow, current);
             }
         }
         catch (err) {
@@ -44,16 +50,19 @@ function ReadFile(mainWindow) {
 }
 exports.ReadFile = ReadFile;
 function WriteOnTextArea(mainWindow, file) {
+    (0, Local_1.Logger)({ type: Local_1.ELogger.Info, void: WriteOnTextArea.name, line: (0, Local_1.getCurrentLine)(), comment: "Called Function" });
     (0, JSRenderer_1.JSParser)(mainWindow, "./src/renderer.js", `let a = ${JSON.stringify(file.content)};`).catch((err) => console.log(err));
 }
 function ReWriteOnTextArea(mainWindow, file) {
-    (0, JSRenderer_1.JSParser)(mainWindow, "./src/renderer.js", `let a = ${JSON.stringify(file.content)};`);
+    (0, Local_1.Logger)({ type: Local_1.ELogger.Info, void: ReWriteOnTextArea.name, line: (0, Local_1.getCurrentLine)(), comment: "Called Function" });
+    (0, JSRenderer_1.JSParser)(mainWindow, "./src/renderer.js", `a = ${JSON.stringify(file.content)};`);
 }
 function CompareFiles(mainWindow) {
     return __awaiter(this, void 0, void 0, function* () {
-        const currentTextArea = GetTextArea(mainWindow);
+        (0, Local_1.Logger)({ type: Local_1.ELogger.Info, void: CompareFiles.name, line: (0, Local_1.getCurrentLine)(), comment: "Called Function" });
+        const currentTextArea = yield GetTextArea(mainWindow);
         const oldTextArea = currentFile === null || currentFile === void 0 ? void 0 : currentFile.content;
-        if ((yield currentTextArea) === oldTextArea) {
+        if (currentTextArea.replace(/\r?\n|\r/g, "").replace(/"/g, "'") === (oldTextArea === null || oldTextArea === void 0 ? void 0 : oldTextArea.replace(/\r?\n|\r/g, "").replace(/"/g, "'"))) {
             return true;
         }
         return false;
@@ -63,22 +72,19 @@ function FileOpenAskSave() { return; }
 function ReOpenFile() { return; }
 function GetTextArea(mainWindow) {
     return __awaiter(this, void 0, void 0, function* () {
+        (0, Local_1.Logger)({ type: Local_1.ELogger.Info, void: GetTextArea.name, line: (0, Local_1.getCurrentLine)(), comment: "Called Function" });
         const result = yield (0, JSRenderer_1.JSDocument)(mainWindow, "document.getElementById('editor')?.value || ''");
         return result;
     });
 }
 function isSameFileOpen(newFile) {
+    (0, Local_1.Logger)({ type: Local_1.ELogger.Info, void: isSameFileOpen.name, line: (0, Local_1.getCurrentLine)(), comment: "Called Function" });
     return (currentFile === null || currentFile === void 0 ? void 0 : currentFile.name) === newFile.name && (currentFile === null || currentFile === void 0 ? void 0 : currentFile.content) === newFile.content;
 }
 function saveFile(mainWindow) {
+    (0, Local_1.Logger)({ type: Local_1.ELogger.Info, void: saveFile.name, line: (0, Local_1.getCurrentLine)(), comment: "Called Function" });
     CompareFiles(mainWindow).then((res) => {
-        if (res.valueOf() == true) {
-            return;
-        }
-        else {
-            // PROCESS TO SAVE
-            console.log("Saving...");
-        }
+        console.log(res.valueOf());
     });
 }
 exports.saveFile = saveFile;

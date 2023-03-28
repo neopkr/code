@@ -1,0 +1,58 @@
+/* Estilos generales */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  /* Estilos del contenedor principal */
+  .container {
+    display: flex;
+    height: 100%;
+  }
+  
+  /* Estilos del panel lateral izquierdo */
+  .sidebar {
+    width: 300px;
+    height: 100%;
+    background-color: #20232a;
+    color: white;
+    overflow-y: auto;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 10px;
+  }
+  
+  .sidebar li {
+    margin-bottom: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .sidebar li:hover {
+    background-color: #3f4149;
+  }
+  
+  .sidebar li.active {
+    background-color: #4d4d4d;
+  }
+  
+  /* Estilos del panel derecho */
+  .editor {
+    flex: 1;
+    height: 100%;
+    background-color: white;
+  }
+  
+  /* Estilos del editor de CodeMirror */
+  .CodeMirror {
+    height: 100%;
+  }
