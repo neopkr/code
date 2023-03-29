@@ -1,5 +1,6 @@
-import { ipcMain } from "electron";
 import { SelectedFile } from "../Files/FileBar";
+
+// Listener for be added in top main.ts
 
 function RequestListener() 
 {

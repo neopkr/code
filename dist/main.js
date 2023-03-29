@@ -45,7 +45,8 @@ let mainWindow = () => {
     });
     win.loadFile(path.join(__dirname, "index.html"));
     win.webContents.openDevTools();
-    (0, Menu_1.createMenu)(win);
+    //createMenu(win)
+    (0, Menu_1.createMenuTesting)(win);
 };
 electron_1.app.on('ready', () => {
     mainWindow();

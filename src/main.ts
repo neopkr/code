@@ -1,5 +1,5 @@
 import { app, BrowserWindow } from 'electron';
-import { createMenu } from './Menu/Menu';
+import { createMenu, createMenuTesting } from './Menu/Menu';
 import { ELogger, getCurrentLine, Logger } from './Debug/Local';
 import * as path from 'path'
 import RequestListener from './Listener/RequestListener';
@@ -19,7 +19,8 @@ let mainWindow = () => {
     })
     win.loadFile(path.join(__dirname, "index.html"))
     win.webContents.openDevTools()
-    createMenu(win)
+    //createMenu(win)
+    createMenuTesting(win)
 }
 
 
