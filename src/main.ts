@@ -1,32 +1,28 @@
-import { app, BrowserWindow, dialog } from 'electron';
-import * as fs from 'fs';
-import { ReadFile } from './Files/ReadFile';
+import { app, BrowserWindow } from 'electron';
 import { createMenu } from './Menu/Menu';
 import { ELogger, getCurrentLine, Logger } from './Debug/Local';
-import { JSParser } from './WebContent/JSRenderer';
-import { ObtainFilesInExplorer } from './Files/FileBar';
+import * as path from 'path'
+import RequestListener from './Listener/RequestListener';
 
-let mainWindow: BrowserWindow;
+RequestListener();
 
-app.on('ready', () => {
+let mainWindow = () => {
     Logger({ type: ELogger.Info, void: "main", line: getCurrentLine(), comment: "Initializing mainWindow();"})
-
-    mainWindow = new BrowserWindow({
+    const win = new BrowserWindow({
         width: 1400,
         height: 800,
+        title: "Code",
         webPreferences: {
-            nodeIntegration: true,
-            devTools: true
+            contextIsolation: false,
+            nodeIntegration: true
         }
-    });
-    Logger({ type: ELogger.Info, void: "main", line: getCurrentLine(), comment: "!!! DevTools = True !!!"})
-    mainWindow.webContents.openDevTools()
-    Logger({ type: ELogger.Info, void: "main", line: getCurrentLine(), comment: "Calling index.html"})
-    mainWindow.loadFile('./index.html');
+    })
+    win.loadFile(path.join(__dirname, "index.html"))
+    win.webContents.openDevTools()
+    createMenu(win)
+}
 
-    Logger({ type: ELogger.Info, void: "main", line: getCurrentLine(), comment: "Initializing MenuBar"})
-    createMenu(mainWindow)
 
-    //test function
-    ObtainFilesInExplorer()
-});
+app.on('ready', () => {
+    mainWindow();
+})

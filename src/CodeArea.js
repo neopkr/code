@@ -5,7 +5,9 @@ function CleanTextArea() {
 }
 function ModifyTextArea(area) {
     //myCodeMirror.setValue(area);
+    //testing
+    console.log(area)
+    document.getElementById("editor").innerHTML = area
     $.value = area
 }
 
-ModifyTextArea(a)

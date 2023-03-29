@@ -1,13 +1,16 @@
 import { BrowserWindow } from 'electron';
 import * as fs from 'fs';
 
-function DOMStringfy(string: string|undefined) {
+function DOMStringfy(string: string | undefined) {
     return JSON.stringify(string)
 }
 
-function DOMParser(content: string|undefined , js: string) {
-    return `${content}
-    ${js}`
+function DOMParser(content: string | undefined, js: string) {
+    if (!content || !js) {
+        throw new Error('Missing content or js');
+    }
+    return `${js}
+    ${content}`
 }
 
 function DOMParser_test(content: string, js: string) {

@@ -1,5 +1,7 @@
 function appendFile(file) {
-    return document.getElementById("file-content").appendChild(document.createElement("li")).textContent = file
+    document.getElementById("file-content").appendChild(document.createElement("li")).textContent = file
 }
 
-appendFile(a)
+function setFolderName(name) {
+    document.getElementById("folder-name").textContent = name
+}

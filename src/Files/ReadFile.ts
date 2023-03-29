@@ -10,7 +10,6 @@ interface IOpenFile {
     content: string
 }
 
-let canUseWrite = true;
 const emptyFile: IOpenFile = { name: "", content: "" }
 let currentFile: IOpenFile | undefined
 
@@ -22,15 +21,10 @@ async function ReadFile(mainWindow: BrowserWindow) {
             const fileName = result.filePaths[0]
             const fileContent = fs.readFileSync(result.filePaths[0], 'utf-8')
             const current = { name: path.basename(fileName), content: fileContent }
-            if (isSameFileOpen(current)) { console.log("File already open"); return }
+            if (isSameFileOpen(current)) { Logger({ type: ELogger.Warning, void: isSameFileOpen.name, line: getCurrentLine(), comment: "Skipping ReadFile(), File is already open." }); return; }
+            if (FileIsEmpty(current)) { Logger({ type: ELogger.Warning, void: FileIsEmpty.name, line: getCurrentLine(), comment: "Skipping ReadFile(), File is empty." }); return; }
             currentFile = current
-            if (canUseWrite) {
-                WriteOnTextArea(mainWindow, current)
-                canUseWrite = false;
-                return;
-            }
-            ReWriteOnTextArea(mainWindow, current)
-            
+            WriteOnTextArea(mainWindow, current)
         }
     } catch (err) {
         console.log(err)
@@ -39,11 +33,7 @@ async function ReadFile(mainWindow: BrowserWindow) {
 
 function WriteOnTextArea(mainWindow: BrowserWindow, file: IOpenFile) {
     Logger({ type: ELogger.Info, void: WriteOnTextArea.name, line: getCurrentLine(), comment: "Called Function"})
-    JSParser(mainWindow, "./src/CodeArea.js", `let a = ${JSON.stringify(file.content)};`).catch((err) => console.log(err))
-}
-function ReWriteOnTextArea(mainWindow: BrowserWindow, file: IOpenFile) {
-    Logger({ type: ELogger.Info, void: ReWriteOnTextArea.name, line: getCurrentLine(), comment: "Called Function"})
-    JSParser(mainWindow, "./src/CodeArea.js", `a = ${JSON.stringify(file.content)};`)
+    JSParser(mainWindow, "./src/CodeArea.js", `ModifyTextArea(${JSON.stringify(file.content)});`).catch((err) => console.log(err))
 }
 
 async function CompareFiles(mainWindow: BrowserWindow): Promise<boolean> {
@@ -58,6 +48,14 @@ async function CompareFiles(mainWindow: BrowserWindow): Promise<boolean> {
 
 function FileOpenAskSave() { return; }
 function ReOpenFile() { return; }
+
+function FileIsEmpty (file: IOpenFile) {
+    if (file.content === emptyFile.content) {
+        return true;
+    }
+
+    return false;
+}
 
 async function GetTextArea(mainWindow: BrowserWindow): Promise<string> {
     Logger({ type: ELogger.Info, void: GetTextArea.name, line: getCurrentLine(), comment: "Called Function"})
