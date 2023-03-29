@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js" integrity="sha512-8RnEqURPUc5aqFEN04aQEiPlSAdE0jlFS/9iGgUyNtwFnSKCXhmB6ZTNl7LnDtDWKabJIASzXrzD0K+LYexU9g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css" integrity="sha512-uf06llspW44/LZpHzHT6qBOIVODjWtv4MxCricRxkzvopAlSWnTf6hpZTFxuuZcuNE9CBQhqE0Seu1CoRk84nQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/keymap/emacs.min.js" integrity="sha512-vkAJFl6fSbUY4MDhe50ATyWN/8jLYZPtxqELsXbbxA+bSxk8n/0iVBeGQqCJJYv2mn1bhBKs7du3A0HbtgrLEA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/keymap/sublime.min.js" integrity="sha512-SV3qeFFtzcmGtUQPLM7HLy/7GKJ/x3c2PdiF5GZQnbHzIlI2q7r77y0IgLLbBDeHiNfCSBYDQt898Xp0tcZOeA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/meta.min.js" integrity="sha512-/2x+sfL5ERHfoViXm/UncFBzaD54f2bkjEui6w2IheEUafG2gcHJv3gQ4VDIqNr+LuApQwpnsjjrEMXI43nPzg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/paraiso-dark.min.css" integrity="sha512-5hz9PNWbmgNiQUEtQyBS0vOV6FhNiLSyLBTDPe8W/eOUQOCDqbeKk1yOcJqOlSHyk5GtcvkEUOJ+yPVchC9b1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/javascript/javascript.min.js" integrity="sha512-I6CdJdruzGtvDyvdO4YsiAq+pkWf2efgd1ZUSK2FnM/u2VuRASPC7GowWQrWyjxCZn6CT89s3ddGI+be0Ak9Fg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/htmlmixed/htmlmixed.min.js" integrity="sha512-HN6cn6mIWeFJFwRN9yetDAMSh+AK9myHF1X9GlSlKmThaat65342Yw8wL7ITuaJnPioG0SYG09gy0qd5+s777w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <title>Code</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <ul id="file-content">
+                <li class="folder-name dropdown" id="folder-name">code</li>
+                <ul class="dropdown-menu">
+                    <li class="file">Archivo 1</li>
+                    <li class="file">Archivo 2</li>
+                    <li class="file">Archivo 3</li>
+                </ul>
+            </ul>
+        </div>
+        <div class="editor-wrapper">
+            <textarea id="editor"></textarea>
+        </div>
+    </div>
+    
+    <script>
+        const folderName = document.querySelector('.folder-name');
+        const dropdownMenu = document.querySelector('.dropdown-menu');
+
+        dropdownMenu.style.display = 'block';
+
+        folderName.addEventListener('click', function () {
+            if (dropdownMenu.style.display === 'block') {
+                dropdownMenu.style.display = 'none';
+            } else {
+                dropdownMenu.style.display = 'block';
+            }
+        });
+    </script>
+    <script src="./renderer.js"></script>
+</body>
+
+</html>
