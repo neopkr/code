@@ -32,25 +32,62 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SelectedFile = exports.ObtainFilesInExplorer = void 0;
+exports.ObtainFilesInExplorer = void 0;
 const electron_1 = require("electron");
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
+const Local_1 = require("../Debug/Local");
 const JSRenderer_1 = require("../WebContent/JSRenderer");
 let currentFolder;
 function ObtainFilesInExplorer(mainWindow) {
+    // TODO: Al abrir nuevamente una carpeta, 1. verificar q la carpeta ya este abierta, 2. borrar los <li class="file" /> del html y poner los nuevos
     electron_1.dialog.showOpenDialog({
         properties: ['openDirectory']
     }).then((result) => __awaiter(this, void 0, void 0, function* () {
         if (!result.canceled) {
             const folderPath = result.filePaths[0];
             const folderName = getFolderName(folderPath);
-            currentFolder = {
-                relativePath: folderPath,
-                name: folderName
-            };
-            SetFolderName(mainWindow, currentFolder);
-            yield ReadFilesFromFolder(mainWindow, folderPath);
+            if (typeof currentFolder === "undefined") {
+                currentFolder = {
+                    relativePath: folderPath,
+                    name: folderName
+                };
+                (0, Local_1.Logger)({
+                    type: Local_1.ELogger.Warning,
+                    void: ObtainFilesInExplorer.name,
+                    line: (0, Local_1.getCurrentLine)(),
+                    comment: `Changing folder: ${currentFolder.relativePath} is new folder.`
+                });
+                SetFolderName(mainWindow, currentFolder);
+                yield ReadFilesFromFolder(mainWindow, folderPath);
+            }
+            else {
+                // check folder path is same
+                if (currentFolder.relativePath === folderPath && currentFolder.name == folderName) {
+                    (0, Local_1.Logger)({
+                        type: Local_1.ELogger.Warning,
+                        void: ObtainFilesInExplorer.name,
+                        line: (0, Local_1.getCurrentLine)(),
+                        comment: `Skipping... Folder: ${currentFolder.relativePath} already open!`
+                    });
+                    return;
+                }
+                // init
+                // 2. borrar los <li class="file" /> del html y poner los nuevos
+                (0, JSRenderer_1.JSParser)(mainWindow, "./src/FileBar.js", "deleteFile();");
+                currentFolder = {
+                    relativePath: folderPath,
+                    name: folderName
+                };
+                (0, Local_1.Logger)({
+                    type: Local_1.ELogger.Warning,
+                    void: ObtainFilesInExplorer.name,
+                    line: (0, Local_1.getCurrentLine)(),
+                    comment: `Changing folder: ${currentFolder.relativePath} is new folder.`
+                });
+                SetFolderName(mainWindow, currentFolder);
+                yield ReadFilesFromFolder(mainWindow, folderPath);
+            }
         }
     })).catch(err => {
         console.log(err);
@@ -114,15 +151,6 @@ function SetFolderName(mainWindow, folder) {
 }
 function setFilesInFileBar() {
 }
-function SelectedFile() {
-    return __awaiter(this, void 0, void 0, function* () {
-        electron_1.ipcMain.on("files", (e, d) => {
-            const { id, text } = d;
-            console.log(text);
-        });
-    });
-}
-exports.SelectedFile = SelectedFile;
 function getFolderName(filePath) {
     // E:\dev\code\dist\WebContent
     const last = filePath.split("\\");

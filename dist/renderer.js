@@ -1,15 +1,13 @@
 const { ipcRenderer } = require('electron')
 
-const files = document.querySelectorAll(".file");
-files.forEach((file) => {
-    file.addEventListener("click", () => {
-        ipcRenderer.send("files", {
-            id: file.id,
-            text: file.textContent
-        })
-    })
-})
+const el = document.querySelector(".dropdown-menu");
 
-ipcRenderer.on('lang', (e, d) => {
-    monaco.editor.setModelLanguage(editor.getModel(), d)
-})
+el.addEventListener("click", (event) => {
+  // Verifica si el elemento que generó el evento tiene la clase .file
+  if (event.target.classList.contains("file")) {
+    ipcRenderer.send("files", {
+      id: event.target.id,
+      text: event.target.textContent
+    });
+  }
+});

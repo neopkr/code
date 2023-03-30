@@ -1,6 +1,8 @@
 import { BrowserWindow, dialog, ipcMain } from "electron"
 import * as fs from 'fs'
 import * as path from 'path'
+import { ELogger, getCurrentLine, Logger } from "../Debug/Local"
+import RequestListener from "../Listener/RequestListener";
 import { JSDocument, JSParser } from "../WebContent/JSRenderer";
 
 interface IFolder {
@@ -11,18 +13,55 @@ interface IFolder {
 let currentFolder: IFolder | undefined;
 
 function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
+  // TODO: Al abrir nuevamente una carpeta, 1. verificar q la carpeta ya este abierta, 2. borrar los <li class="file" /> del html y poner los nuevos
   dialog.showOpenDialog({
     properties: ['openDirectory']
   }).then(async result => {
     if (!result.canceled) {
       const folderPath = result.filePaths[0]
       const folderName = getFolderName(folderPath)
-      currentFolder = {
-        relativePath: folderPath,
-        name: folderName
+      if (typeof currentFolder === "undefined")
+      {
+        currentFolder = {
+          relativePath: folderPath,
+          name: folderName
+        }
+        Logger({
+          type: ELogger.Warning,
+          void: ObtainFilesInExplorer.name,
+          line: getCurrentLine(),
+          comment: `Changing folder: ${currentFolder.relativePath} is new folder.`
+        })
+        SetFolderName(mainWindow, currentFolder)
+        await ReadFilesFromFolder(mainWindow, folderPath)
+      } else {
+        // check folder path is same
+        if (currentFolder.relativePath === folderPath && currentFolder.name == folderName) {
+          Logger({
+            type: ELogger.Warning,
+            void: ObtainFilesInExplorer.name,
+            line: getCurrentLine(),
+            comment: `Skipping... Folder: ${currentFolder.relativePath} already open!`
+          })
+          return;
+        }
+        // ALSO ADD: if detect files are not the same, ask save it
+        // init
+        // 2. borrar los <li class="file" /> del html y poner los nuevos
+        JSParser(mainWindow, "./src/FileBar.js", "deleteFile();")
+        currentFolder = {
+          relativePath: folderPath,
+          name: folderName
+        }
+        Logger({
+          type: ELogger.Warning,
+          void: ObtainFilesInExplorer.name,
+          line: getCurrentLine(),
+          comment: `Changing folder: ${currentFolder.relativePath} is new folder.`
+        })
+        SetFolderName(mainWindow, currentFolder)
+        await ReadFilesFromFolder(mainWindow, folderPath)
       }
-      SetFolderName(mainWindow, currentFolder)
-      await ReadFilesFromFolder(mainWindow, folderPath)
     }
   }).catch(err => {
     console.log(err)
@@ -84,16 +123,9 @@ function setFilesInFileBar() {
 
 }
 
-async function SelectedFile() {
-  ipcMain.on("files", (e, d) => {
-    const { id, text } = d
-    console.log(text)
-  })
-}
-
 function getFolderName(filePath: string) {
   // E:\dev\code\dist\WebContent
   const last = filePath.split("\\")
   return last[last.length - 1]
 }
-export { ObtainFilesInExplorer, SelectedFile }
+export { ObtainFilesInExplorer }
