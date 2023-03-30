@@ -4,6 +4,7 @@ import path from 'path'
 import { JSDocument, JSParser } from '../WebContent/JSRenderer'
 
 import { ELogger, getCurrentLine, Logger } from '../Debug/Local'
+import { setLanguage } from './Extension'
 
 interface IOpenFile {
     name: string,
@@ -24,6 +25,7 @@ async function ReadFile(mainWindow: BrowserWindow) {
             if (isSameFileOpen(current)) { Logger({ type: ELogger.Warning, void: isSameFileOpen.name, line: getCurrentLine(), comment: "Skipping ReadFile(), File is already open." }); return; }
             if (FileIsEmpty(current)) { Logger({ type: ELogger.Warning, void: FileIsEmpty.name, line: getCurrentLine(), comment: "Skipping ReadFile(), File is empty." }); return; }
             currentFile = current
+            setLanguage(mainWindow, current)
             WriteOnTextArea(mainWindow, current)
         }
     } catch (err) {
@@ -75,4 +77,4 @@ function saveFile(mainWindow: BrowserWindow) {
     })
 }
 
-export { ReadFile, saveFile }
+export { ReadFile, saveFile, IOpenFile }

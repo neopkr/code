@@ -18,6 +18,7 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const JSRenderer_1 = require("../WebContent/JSRenderer");
 const Local_1 = require("../Debug/Local");
+const Extension_1 = require("./Extension");
 const emptyFile = { name: "", content: "" };
 let currentFile;
 function ReadFile(mainWindow) {
@@ -38,6 +39,7 @@ function ReadFile(mainWindow) {
                     return;
                 }
                 currentFile = current;
+                console.log((0, Extension_1.setLanguage)(mainWindow, current));
                 WriteOnTextArea(mainWindow, current);
             }
         }
