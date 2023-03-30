@@ -12,10 +12,10 @@ The editor is the same that use [Visual Studio Code](https://github.com/microsof
 ## Installation
 Currently i don't have any script or installer so...
 ```sh
-    > git clone https://github.com/neopkr/code.git
-    > cd code
-    > node ci
-    > npm run start
+> git clone https://github.com/neopkr/code.git
+> cd code
+> node ci
+> npm run start
 ```
 
 ## To do
