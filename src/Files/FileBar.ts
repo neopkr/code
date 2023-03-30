@@ -13,7 +13,7 @@ let currentFolder: IFolder | undefined;
 function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
   dialog.showOpenDialog({
     properties: ['openDirectory']
-  }).then(result => {
+  }).then(async result => {
     if (!result.canceled) {
       const folderPath = result.filePaths[0]
       const folderName = getFolderName(folderPath)
@@ -22,42 +22,66 @@ function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
         name: folderName
       }
       SetFolderName(mainWindow, currentFolder)
-      //ReadFilesFromFolder(folderPath)
+      await ReadFilesFromFolder(mainWindow, folderPath)
     }
   }).catch(err => {
     console.log(err)
   })
 }
 
-function ReadFilesFromFolder(folderPath: string) {
-  fs.readdir(folderPath, (err, files) => {
-    if (err) {
-      console.log(err)
-      return
+async function ReadFilesFromFolder(mainWindow: BrowserWindow, folderPath: string) {
+  let files: string[];
+  try {
+    files = await fs.promises.readdir(folderPath);
+  } catch (err) {
+    console.log(err);
+    return;
+  }
+  const folders: string[] = [];
+  const sortedFiles: string[] = [];
+  for (const file of files) {
+    const filePath = path.join(folderPath, file);
+    const fileStats = await fs.promises.stat(filePath);
+    if (fileStats.isDirectory()) {
+      folders.push(file);
+    } else {
+      sortedFiles.push(file);
     }
+  }
+  const sortedFolders = folders.sort();
+  const sortedItems = sortedFolders.concat(sortedFiles);
+  for (const item of sortedItems) {
+    const filePath = path.join(folderPath, item);
+    const fileStats = await fs.promises.stat(filePath);
+    const isDirectory = fileStats.isDirectory();
+    if (isDirectory) {
+      const folder = `${item}/`;
+      JSParser(mainWindow, "./src/FileBar.js", `appendFile(${JSON.stringify(folder)})`);
+      await ReadFilesFromFolder(mainWindow, filePath);
+    } else {
+      JSParser(mainWindow, "./src/FileBar.js", `appendFile(${JSON.stringify(item)})`);
+    }
+  }
+}
+// QUEDA PENDIENTE HACER QUE LAS CARPETAS SEAN DROPDOWN MENU PARA LOS FILES QUE ESTEN DENTRO DE ELLAS
 
-    files.forEach((file) => {
-      const filePath = path.join(folderPath, file)
-      fs.stat(filePath, (err, stat) => {
-        if (err) {
-          console.log(err)
-          return
-        }
 
-        if (stat.isDirectory()) {
-          // Si el archivo es una carpeta, leer su contenido de manera recursiva
-          ReadFilesFromFolder(filePath)
-        } else {
-          // Si el archivo es un archivo, hacer algo con él
-          console.log(filePath)
-        }
-      })
-    })
-  })
+async function isFolder(path: string) {
+  try {
+    const stats = await fs.promises.stat(path);
+    return stats.isDirectory();
+  } catch (error) {
+    // Si hay un error, se asume que la ruta no existe o no se puede acceder a ella
+    return false;
+  }
 }
 
 function SetFolderName(mainWindow: BrowserWindow, folder: IFolder) {
-    JSParser(mainWindow, "./src/FileBar.js", `setFolderName(${JSON.stringify(folder.name)});`)
+  JSParser(mainWindow, "./src/FileBar.js", `setFolderName(${JSON.stringify(folder.name)});`)
+}
+
+function setFilesInFileBar() {
+
 }
 
 async function SelectedFile() {

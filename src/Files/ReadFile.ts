@@ -14,27 +14,53 @@ interface IOpenFile {
 const emptyFile: IOpenFile = { name: "", content: "" }
 let currentFile: IOpenFile | undefined
 
-async function ReadFile(mainWindow: BrowserWindow) {
-    Logger({ type: ELogger.Info, void: ReadFile.name, line: getCurrentLine(), comment: "Called Function"})
+async function readFile(mainWindow: BrowserWindow) {
+    Logger({
+      type: ELogger.Info,
+      void: readFile.name,
+      line: getCurrentLine(),
+      comment: "Called Function"
+    });
+  
     try {
-        const result = await dialog.showOpenDialog({ properties: ['openFile'] })
-        if (!result.canceled && result.filePaths.length > 0) {
-            const fileName = result.filePaths[0]
-            const fileContent = fs.readFileSync(result.filePaths[0], 'utf-8')
-            const current = { name: path.basename(fileName), content: fileContent }
-            if (isSameFileOpen(current)) { Logger({ type: ELogger.Warning, void: isSameFileOpen.name, line: getCurrentLine(), comment: "Skipping ReadFile(), File is already open." }); return; }
-            if (FileIsEmpty(current)) { Logger({ type: ELogger.Warning, void: FileIsEmpty.name, line: getCurrentLine(), comment: "Skipping ReadFile(), File is empty." }); return; }
-            currentFile = current
-            setLanguage(mainWindow, current)
-            WriteOnTextArea(mainWindow, current)
+      const result = await dialog.showOpenDialog({ properties: ['openFile'] });
+  
+      if (!result.canceled && result.filePaths.length > 0) {
+        const fileName = result.filePaths[0];
+        const fileContent = fs.readFileSync(result.filePaths[0], 'utf-8');
+        const current = { name: path.basename(fileName), content: fileContent };
+  
+        if (isSameFileOpen(current)) {
+          Logger({
+            type: ELogger.Warning,
+            void: isSameFileOpen.name,
+            line: getCurrentLine(),
+            comment: "Skipping readFile(), File is already open."
+          });
+          return;
         }
+  
+        if (FileIsEmpty(current)) {
+          Logger({
+            type: ELogger.Warning,
+            void: FileIsEmpty.name,
+            line: getCurrentLine(),
+            comment: "Skipping readFile(), File is empty."
+          });
+          return;
+        }
+  
+        currentFile = current;
+        setLanguage(mainWindow, current);
+        writeOnTextArea(mainWindow, current);
+      }
     } catch (err) {
-        console.log(err)
+      console.log(err);
     }
-}
+  }
 
-function WriteOnTextArea(mainWindow: BrowserWindow, file: IOpenFile) {
-    Logger({ type: ELogger.Info, void: WriteOnTextArea.name, line: getCurrentLine(), comment: "Called Function"})
+function writeOnTextArea(mainWindow: BrowserWindow, file: IOpenFile) {
+    Logger({ type: ELogger.Info, void: writeOnTextArea.name, line: getCurrentLine(), comment: "Called Function"})
     JSParser(mainWindow, "./src/CodeArea.js", `ModifyTextArea(${JSON.stringify(file.content)});`).catch((err) => console.log(err))
 }
 
@@ -50,6 +76,35 @@ async function CompareFiles(mainWindow: BrowserWindow): Promise<boolean> {
 
 function FileOpenAskSave() { return; }
 function ReOpenFile() { return; }
+
+async function fileContentIsEmpty(mainWindow: BrowserWindow) {
+    const currentArea = await GetTextArea(mainWindow);
+    if (typeof currentFile === "undefined") {
+        Logger({
+            type: ELogger.Error, void: fileContentIsEmpty.name, 
+            line: getCurrentLine(), 
+            comment: "File IOpenFile is undefined, loading data..."
+        })
+    }
+    if (currentFile?.name !== "" && currentFile?.content === "") {
+        Logger({
+            type: ELogger.Error, void: fileContentIsEmpty.name, 
+            line: getCurrentLine(), 
+            comment: "IOpenFile: Has name but no content, saving content."
+        })
+    }
+    if (currentFile?.name === "" && currentFile?.content !== "") {
+        Logger({
+            type: ELogger.Error, void: fileContentIsEmpty.name, 
+            line: getCurrentLine(), 
+            comment: "IOpenFile: Has content but no name, saving as new file."
+        })
+    }
+    if (currentArea === emptyFile.content)
+    {
+
+    }
+}
 
 function FileIsEmpty (file: IOpenFile) {
     if (file.content === emptyFile.content) {
@@ -73,8 +128,9 @@ function isSameFileOpen(newFile: IOpenFile): boolean {
 function saveFile(mainWindow: BrowserWindow) {
     Logger({ type: ELogger.Info, void: saveFile.name, line: getCurrentLine(), comment: "Called Function"})
     CompareFiles(mainWindow).then((res) => {
+        fileContentIsEmpty(mainWindow)
         console.log(res.valueOf())
     })
 }
 
-export { ReadFile, saveFile, IOpenFile }
+export { readFile, saveFile, IOpenFile }

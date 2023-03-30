@@ -1,6 +1,6 @@
 import { BrowserWindow, Menu } from "electron";
 import { ObtainFilesInExplorer } from "../Files/FileBar";
-import { ReadFile, saveFile } from "../Files/ReadFile";
+import { readFile, saveFile } from "../Files/ReadFile";
 import { Logger, ELogger, getCurrentLine } from "../Debug/Local";
 
 function createMenu(mainWindow: BrowserWindow) {
@@ -12,7 +12,7 @@ function createMenu(mainWindow: BrowserWindow) {
             submenu: [
                 {
                     label: "Abrir",
-                    click: () => ReadFile(mainWindow)
+                    click: () => readFile(mainWindow)
                 },
                 {
                     label: "Abrir Carpeta",
@@ -39,7 +39,7 @@ function createMenuTesting(mainWindow: BrowserWindow) {
             submenu: [
                 {
                     label: "Abrir",
-                    click: () => ReadFile(mainWindow)
+                    click: () => readFile(mainWindow)
                 },
                 {
                     label: "Abrir Carpeta",
@@ -51,6 +51,20 @@ function createMenuTesting(mainWindow: BrowserWindow) {
                 }
             ]
         },
+        {
+            label: 'Editar',
+            submenu: [
+              { label: 'Deshacer' },
+              { label: 'Rehacer' },
+              { type: 'separator' },
+              { label: 'Cortar' },
+              { label: 'Copiar' },
+              { label: 'Pegar' },
+              { type: 'separator' },
+              { label: 'Seleccionar todo' }
+            ],
+            submenuClass: 'submenu-edit'
+          },
         {
             label: 'View',
             submenu: [

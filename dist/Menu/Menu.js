@@ -13,7 +13,7 @@ function createMenu(mainWindow) {
             submenu: [
                 {
                     label: "Abrir",
-                    click: () => (0, ReadFile_1.ReadFile)(mainWindow)
+                    click: () => (0, ReadFile_1.readFile)(mainWindow)
                 },
                 {
                     label: "Abrir Carpeta",
@@ -38,7 +38,7 @@ function createMenuTesting(mainWindow) {
             submenu: [
                 {
                     label: "Abrir",
-                    click: () => (0, ReadFile_1.ReadFile)(mainWindow)
+                    click: () => (0, ReadFile_1.readFile)(mainWindow)
                 },
                 {
                     label: "Abrir Carpeta",
@@ -49,6 +49,20 @@ function createMenuTesting(mainWindow) {
                     click: () => (0, ReadFile_1.saveFile)(mainWindow)
                 }
             ]
+        },
+        {
+            label: 'Editar',
+            submenu: [
+                { label: 'Deshacer' },
+                { label: 'Rehacer' },
+                { type: 'separator' },
+                { label: 'Cortar' },
+                { label: 'Copiar' },
+                { label: 'Pegar' },
+                { type: 'separator' },
+                { label: 'Seleccionar todo' }
+            ],
+            submenuClass: 'submenu-edit'
         },
         {
             label: 'View',
