@@ -61,7 +61,7 @@ function FileIsEmpty (file: IOpenFile) {
 
 async function GetTextArea(mainWindow: BrowserWindow): Promise<string> {
     Logger({ type: ELogger.Info, void: GetTextArea.name, line: getCurrentLine(), comment: "Called Function"})
-    const result = await JSDocument(mainWindow, "document.getElementById('editor')?.value || ''")
+    const result = await JSDocument(mainWindow, "editor.getValue()")
     return result as string
 }
 

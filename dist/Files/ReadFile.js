@@ -39,7 +39,7 @@ function ReadFile(mainWindow) {
                     return;
                 }
                 currentFile = current;
-                console.log((0, Extension_1.setLanguage)(mainWindow, current));
+                (0, Extension_1.setLanguage)(mainWindow, current);
                 WriteOnTextArea(mainWindow, current);
             }
         }
@@ -75,7 +75,7 @@ function FileIsEmpty(file) {
 function GetTextArea(mainWindow) {
     return __awaiter(this, void 0, void 0, function* () {
         (0, Local_1.Logger)({ type: Local_1.ELogger.Info, void: GetTextArea.name, line: (0, Local_1.getCurrentLine)(), comment: "Called Function" });
-        const result = yield (0, JSRenderer_1.JSDocument)(mainWindow, "document.getElementById('editor')?.value || ''");
+        const result = yield (0, JSRenderer_1.JSDocument)(mainWindow, "editor.getValue()");
         return result;
     });
 }
