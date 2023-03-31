@@ -22,17 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 const Menu_1 = require("./Menu/Menu");
 const Local_1 = require("./Debug/Local");
 const path = __importStar(require("path"));
-const RequestListener_1 = __importDefault(require("./Listener/RequestListener"));
-(0, RequestListener_1.default)();
-let mainWindow = () => {
+const RequestListener_1 = require("./Listener/RequestListener");
+const Notifications_1 = require("./Notifications/Notifications");
+(0, RequestListener_1.RequestListener)();
+function mainWindow() {
     (0, Local_1.Logger)({ type: Local_1.ELogger.Info, void: "main", line: (0, Local_1.getCurrentLine)(), comment: "Initializing mainWindow();" });
     const win = new electron_1.BrowserWindow({
         width: 1400,
@@ -47,7 +45,10 @@ let mainWindow = () => {
     win.webContents.openDevTools();
     //createMenu(win)
     (0, Menu_1.createMenuTesting)(win);
-};
+    return win;
+}
 electron_1.app.on('ready', () => {
-    mainWindow();
+    const win = mainWindow();
+    (0, Notifications_1.spawnNotificationLogger)(win, Notifications_1.NotificationsType.Error, `Currently Project setting has ${Menu_1.createMenuTesting.name} activated or in use!`);
+    (0, RequestListener_1.RequestListenerOnReady)(win);
 });

@@ -12,15 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveFile = exports.readFile = void 0;
+exports.currentFile = exports.saveFile = exports.readFileByPath = exports.readFile = void 0;
 const electron_1 = require("electron");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const JSRenderer_1 = require("../WebContent/JSRenderer");
 const Local_1 = require("../Debug/Local");
 const Extension_1 = require("./Extension");
-const emptyFile = { name: "", content: "" };
+const Imports_1 = require("./Imports");
+const emptyFile = { name: "", content: "", relativePath: "" };
 let currentFile;
+exports.currentFile = currentFile;
 function readFile(mainWindow) {
     return __awaiter(this, void 0, void 0, function* () {
         (0, Local_1.Logger)({
@@ -34,7 +36,7 @@ function readFile(mainWindow) {
             if (!result.canceled && result.filePaths.length > 0) {
                 const fileName = result.filePaths[0];
                 const fileContent = fs_1.default.readFileSync(result.filePaths[0], 'utf-8');
-                const current = { name: path_1.default.basename(fileName), content: fileContent };
+                const current = { name: path_1.default.basename(fileName), content: fileContent, relativePath: result.filePaths[0] };
                 if (isSameFileOpen(current)) {
                     (0, Local_1.Logger)({
                         type: Local_1.ELogger.Warning,
@@ -53,7 +55,8 @@ function readFile(mainWindow) {
                     });
                     return;
                 }
-                currentFile = current;
+                exports.currentFile = currentFile = current;
+                yield (0, Imports_1.setScriptImport)(mainWindow, current);
                 (0, Extension_1.setLanguage)(mainWindow, current);
                 writeOnTextArea(mainWindow, current);
             }
@@ -64,6 +67,48 @@ function readFile(mainWindow) {
     });
 }
 exports.readFile = readFile;
+function readFileByPath(mainWindow, filePath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        (0, Local_1.Logger)({
+            type: Local_1.ELogger.Info,
+            void: readFileByPath.name,
+            line: (0, Local_1.getCurrentLine)(),
+            comment: "Called Function"
+        });
+        try {
+            if (fs_1.default.existsSync(filePath)) {
+                const fileContent = fs_1.default.readFileSync(filePath, 'utf-8');
+                const current = { name: path_1.default.basename(filePath), content: fileContent, relativePath: filePath };
+                if (isSameFileOpen(current)) {
+                    (0, Local_1.Logger)({
+                        type: Local_1.ELogger.Warning,
+                        void: isSameFileOpen.name,
+                        line: (0, Local_1.getCurrentLine)(),
+                        comment: "Skipping readFileByPath(), File is already open."
+                    });
+                    return;
+                }
+                if (FileIsEmpty(current)) {
+                    (0, Local_1.Logger)({
+                        type: Local_1.ELogger.Warning,
+                        void: FileIsEmpty.name,
+                        line: (0, Local_1.getCurrentLine)(),
+                        comment: "Skipping readFileByPath(), File is empty."
+                    });
+                    return;
+                }
+                exports.currentFile = currentFile = current;
+                yield (0, Imports_1.setScriptImport)(mainWindow, current);
+                (0, Extension_1.setLanguage)(mainWindow, current);
+                writeOnTextArea(mainWindow, current);
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    });
+}
+exports.readFileByPath = readFileByPath;
 function writeOnTextArea(mainWindow, file) {
     (0, Local_1.Logger)({ type: Local_1.ELogger.Info, void: writeOnTextArea.name, line: (0, Local_1.getCurrentLine)(), comment: "Called Function" });
     (0, JSRenderer_1.JSParser)(mainWindow, "./src/CodeArea.js", `ModifyTextArea(${JSON.stringify(file.content)});`).catch((err) => console.log(err));
@@ -110,7 +155,7 @@ function fileContentIsEmpty(mainWindow) {
     });
 }
 function FileIsEmpty(file) {
-    if (file.content === emptyFile.content) {
+    if (file.content === emptyFile.content && file.name === emptyFile.name) {
         return true;
     }
     return false;
@@ -128,9 +173,28 @@ function isSameFileOpen(newFile) {
 }
 function saveFile(mainWindow) {
     (0, Local_1.Logger)({ type: Local_1.ELogger.Info, void: saveFile.name, line: (0, Local_1.getCurrentLine)(), comment: "Called Function" });
-    CompareFiles(mainWindow).then((res) => {
-        fileContentIsEmpty(mainWindow);
-        console.log(res.valueOf());
-    });
+    CompareFiles(mainWindow).then((res) => __awaiter(this, void 0, void 0, function* () {
+        //fileContentIsEmpty(mainWindow)
+        const canSave = res.valueOf();
+        if (!canSave) {
+            const actualTextArea = yield GetTextArea(mainWindow);
+            fs_1.default.writeFileSync(currentFile.relativePath, actualTextArea);
+            currentFile.content = actualTextArea;
+            (0, Local_1.Logger)({
+                type: Local_1.ELogger.Info,
+                void: saveFile.name,
+                line: (0, Local_1.getCurrentLine)(),
+                comment: `File: ${currentFile.name} has been saved. ${currentFile.relativePath}`
+            });
+        }
+        else {
+            (0, Local_1.Logger)({
+                type: Local_1.ELogger.Warning,
+                void: saveFile.name,
+                line: (0, Local_1.getCurrentLine)(),
+                comment: `File ${currentFile.name} content is not changed. ${currentFile.relativePath}`
+            });
+        }
+    }));
 }
 exports.saveFile = saveFile;

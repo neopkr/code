@@ -23,7 +23,8 @@ const languageMap = {
     'rust': 'rust',
     'typescript': 'typescript',
     'tsx': 'typescript',
-    'jsx': 'javascript'
+    'jsx': 'javascript',
+    'txt': 'plaintext'
 };
 function setLanguage(mainWindow, currentFile) {
     var _a;

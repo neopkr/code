@@ -38,15 +38,25 @@ function createMenuTesting(mainWindow: BrowserWindow) {
             label: "Archivo",
             submenu: [
                 {
+                    label: "Nuevo Archivo",
+                    accelerator: process.platform === "darwin" ? "Cmd+N" : "Ctrl+N",
+                },
+                {
+                    type: "separator"
+                },
+                {
                     label: "Abrir",
+                    accelerator: process.platform === "darwin" ? "Cmd+O" : "Ctrl+O",
                     click: () => readFile(mainWindow)
                 },
                 {
                     label: "Abrir Carpeta",
+                    accelerator: process.platform === "darwin" ? "Cmd+Alt+O" : "Ctrl+Alt+O",
                     click: () => ObtainFilesInExplorer(mainWindow)
                 },
                 {
                     label: "Guardar",
+                    accelerator: process.platform === "darwin" ? "Cmd+S" : "Ctrl+S",
                     click: () => saveFile(mainWindow)
                 }
             ]

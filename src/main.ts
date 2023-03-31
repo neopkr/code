@@ -2,11 +2,12 @@ import { app, BrowserWindow } from 'electron';
 import { createMenu, createMenuTesting } from './Menu/Menu';
 import { ELogger, getCurrentLine, Logger } from './Debug/Local';
 import * as path from 'path'
-import RequestListener from './Listener/RequestListener';
+import { RequestListener, RequestListenerOnReady } from './Listener/RequestListener';
+import { NotificationsType, spawnNotificationLogger } from './Notifications/Notifications';
 
 RequestListener();
 
-let mainWindow = () => {
+function mainWindow() {
     Logger({ type: ELogger.Info, void: "main", line: getCurrentLine(), comment: "Initializing mainWindow();"})
     const win = new BrowserWindow({
         width: 1400,
@@ -21,9 +22,12 @@ let mainWindow = () => {
     win.webContents.openDevTools()
     //createMenu(win)
     createMenuTesting(win)
+    
+    return win
 }
 
-
 app.on('ready', () => {
-    mainWindow();
+    const win = mainWindow();
+    spawnNotificationLogger(win, NotificationsType.Error, `Currently Project setting has ${createMenuTesting.name} activated or in use!`);
+    RequestListenerOnReady(win);
 })

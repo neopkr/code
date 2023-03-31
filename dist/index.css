@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -45,8 +46,10 @@ html, body {
 }
 
 .editor-wrapper {
-  width: calc(100% - 300px); /* Ancho máximo: el ancho de la ventana menos el ancho de la barra lateral */
-  max-width: calc(100% - 300px); /* Establece un ancho máximo para que el editor no se expanda más allá de este ancho */
+  width: calc(100% - 300px);
+  /* Ancho máximo: el ancho de la ventana menos el ancho de la barra lateral */
+  max-width: calc(100% - 300px);
+  /* Establece un ancho máximo para que el editor no se expanda más allá de este ancho */
   height: 100%;
   overflow: hidden;
 }
@@ -57,4 +60,66 @@ html, body {
 
 .dropdown:hover .dropdown-menu {
   display: block;
+}
+
+#notifications-container {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin: 16px;
+}
+
+.notification {
+  position: relative;
+  animation-duration: 1s;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.notification-info {
+  background-color: #007acc;
+  color: #fff;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.notification-warning {
+  background-color: #ffb900;
+  color: #fff;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.notification-error {
+  background-color: #d60000;
+  color: #fff;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.notification.fade-in {
+  animation-name: fade-in;
+}
+
+.notification.fade-out {
+  animation-name: fade-out;
 }

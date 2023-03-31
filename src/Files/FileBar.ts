@@ -2,15 +2,18 @@ import { BrowserWindow, dialog, ipcMain } from "electron"
 import * as fs from 'fs'
 import * as path from 'path'
 import { ELogger, getCurrentLine, Logger } from "../Debug/Local"
-import RequestListener from "../Listener/RequestListener";
+import { NotificationsType, spawnNotification, spawnNotificationLogger } from "../Notifications/Notifications";
+import { ReplaceBackSlash } from "../Utils/ConvertSlash";
 import { JSDocument, JSParser } from "../WebContent/JSRenderer";
+import { extMap, onChangeDirDeleteImports } from "./Imports";
 
-interface IFolder {
+interface IFolder { // Create new element string[], read all files from folder and extract theirs respectives .ext for setFolderProjectLangSettingByExt(IFolder.exts)
   relativePath: string,
-  name: string,
+  name: string | undefined,
+  folders: string[] | undefined;
 }
 
-let currentFolder: IFolder | undefined;
+let currentFolder: IFolder;
 
 function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
   // TODO: Al abrir nuevamente una carpeta, 1. verificar q la carpeta ya este abierta, 2. borrar los <li class="file" /> del html y poner los nuevos
@@ -20,11 +23,11 @@ function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
     if (!result.canceled) {
       const folderPath = result.filePaths[0]
       const folderName = getFolderName(folderPath)
-      if (typeof currentFolder === "undefined")
-      {
+      if (typeof currentFolder === "undefined") {
         currentFolder = {
           relativePath: folderPath,
-          name: folderName
+          name: folderName,
+          folders: undefined
         }
         Logger({
           type: ELogger.Warning,
@@ -32,6 +35,7 @@ function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
           line: getCurrentLine(),
           comment: `Changing folder: ${currentFolder.relativePath} is new folder.`
         })
+        spawnNotificationLogger(mainWindow, NotificationsType.Warning, `Changing folder: ${ReplaceBackSlash(currentFolder.relativePath)} is new folder.`)
         SetFolderName(mainWindow, currentFolder)
         await ReadFilesFromFolder(mainWindow, folderPath)
       } else {
@@ -43,15 +47,17 @@ function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
             line: getCurrentLine(),
             comment: `Skipping... Folder: ${currentFolder.relativePath} already open!`
           })
+          spawnNotificationLogger(mainWindow, NotificationsType.Warning, `Skipping... Folder: ${ReplaceBackSlash(currentFolder.relativePath)} already open!`)
           return;
         }
-        // ALSO ADD: if detect files are not the same, ask save it
+        // ALSO ADD: if detect file content are not the same, ask save it
         // init
         // 2. borrar los <li class="file" /> del html y poner los nuevos
         JSParser(mainWindow, "./src/FileBar.js", "deleteFile();")
         currentFolder = {
           relativePath: folderPath,
-          name: folderName
+          name: folderName,
+          folders: undefined
         }
         Logger({
           type: ELogger.Warning,
@@ -59,8 +65,12 @@ function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
           line: getCurrentLine(),
           comment: `Changing folder: ${currentFolder.relativePath} is new folder.`
         })
+        await onChangeDirDeleteImports(mainWindow)
+        spawnNotificationLogger(mainWindow, NotificationsType.Warning, `Changing folder: ${ReplaceBackSlash(currentFolder.relativePath)} is new folder.`)
         SetFolderName(mainWindow, currentFolder)
         await ReadFilesFromFolder(mainWindow, folderPath)
+        await onChangeDirDeleteImports(mainWindow)
+        
       }
     }
   }).catch(err => {
@@ -83,12 +93,17 @@ async function ReadFilesFromFolder(mainWindow: BrowserWindow, folderPath: string
     const fileStats = await fs.promises.stat(filePath);
     if (fileStats.isDirectory()) {
       folders.push(file);
+      currentFolder.folders = folders
     } else {
       sortedFiles.push(file);
     }
   }
   const sortedFolders = folders.sort();
   const sortedItems = sortedFolders.concat(sortedFiles);
+  // Load extMap in JS
+  for (let i = 0; i < extMap.length; i++) {
+    JSDocument(mainWindow, `extMap.push("${extMap[i]}")`)
+  }
   for (const item of sortedItems) {
     const filePath = path.join(folderPath, item);
     const fileStats = await fs.promises.stat(filePath);
@@ -128,4 +143,4 @@ function getFolderName(filePath: string) {
   const last = filePath.split("\\")
   return last[last.length - 1]
 }
-export { ObtainFilesInExplorer }
+export { ObtainFilesInExplorer, currentFolder }

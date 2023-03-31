@@ -32,13 +32,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ObtainFilesInExplorer = void 0;
+exports.currentFolder = exports.ObtainFilesInExplorer = void 0;
 const electron_1 = require("electron");
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const Local_1 = require("../Debug/Local");
+const Notifications_1 = require("../Notifications/Notifications");
+const ConvertSlash_1 = require("../Utils/ConvertSlash");
 const JSRenderer_1 = require("../WebContent/JSRenderer");
+const Imports_1 = require("./Imports");
 let currentFolder;
+exports.currentFolder = currentFolder;
 function ObtainFilesInExplorer(mainWindow) {
     // TODO: Al abrir nuevamente una carpeta, 1. verificar q la carpeta ya este abierta, 2. borrar los <li class="file" /> del html y poner los nuevos
     electron_1.dialog.showOpenDialog({
@@ -48,9 +52,10 @@ function ObtainFilesInExplorer(mainWindow) {
             const folderPath = result.filePaths[0];
             const folderName = getFolderName(folderPath);
             if (typeof currentFolder === "undefined") {
-                currentFolder = {
+                exports.currentFolder = currentFolder = {
                     relativePath: folderPath,
-                    name: folderName
+                    name: folderName,
+                    folders: undefined
                 };
                 (0, Local_1.Logger)({
                     type: Local_1.ELogger.Warning,
@@ -58,6 +63,7 @@ function ObtainFilesInExplorer(mainWindow) {
                     line: (0, Local_1.getCurrentLine)(),
                     comment: `Changing folder: ${currentFolder.relativePath} is new folder.`
                 });
+                (0, Notifications_1.spawnNotificationLogger)(mainWindow, Notifications_1.NotificationsType.Warning, `Changing folder: ${(0, ConvertSlash_1.ReplaceBackSlash)(currentFolder.relativePath)} is new folder.`);
                 SetFolderName(mainWindow, currentFolder);
                 yield ReadFilesFromFolder(mainWindow, folderPath);
             }
@@ -70,14 +76,17 @@ function ObtainFilesInExplorer(mainWindow) {
                         line: (0, Local_1.getCurrentLine)(),
                         comment: `Skipping... Folder: ${currentFolder.relativePath} already open!`
                     });
+                    (0, Notifications_1.spawnNotificationLogger)(mainWindow, Notifications_1.NotificationsType.Warning, `Skipping... Folder: ${(0, ConvertSlash_1.ReplaceBackSlash)(currentFolder.relativePath)} already open!`);
                     return;
                 }
+                // ALSO ADD: if detect file content are not the same, ask save it
                 // init
                 // 2. borrar los <li class="file" /> del html y poner los nuevos
                 (0, JSRenderer_1.JSParser)(mainWindow, "./src/FileBar.js", "deleteFile();");
-                currentFolder = {
+                exports.currentFolder = currentFolder = {
                     relativePath: folderPath,
-                    name: folderName
+                    name: folderName,
+                    folders: undefined
                 };
                 (0, Local_1.Logger)({
                     type: Local_1.ELogger.Warning,
@@ -85,8 +94,11 @@ function ObtainFilesInExplorer(mainWindow) {
                     line: (0, Local_1.getCurrentLine)(),
                     comment: `Changing folder: ${currentFolder.relativePath} is new folder.`
                 });
+                yield (0, Imports_1.onChangeDirDeleteImports)(mainWindow);
+                (0, Notifications_1.spawnNotificationLogger)(mainWindow, Notifications_1.NotificationsType.Warning, `Changing folder: ${(0, ConvertSlash_1.ReplaceBackSlash)(currentFolder.relativePath)} is new folder.`);
                 SetFolderName(mainWindow, currentFolder);
                 yield ReadFilesFromFolder(mainWindow, folderPath);
+                yield (0, Imports_1.onChangeDirDeleteImports)(mainWindow);
             }
         }
     })).catch(err => {
@@ -111,6 +123,7 @@ function ReadFilesFromFolder(mainWindow, folderPath) {
             const fileStats = yield fs.promises.stat(filePath);
             if (fileStats.isDirectory()) {
                 folders.push(file);
+                currentFolder.folders = folders;
             }
             else {
                 sortedFiles.push(file);
@@ -118,6 +131,10 @@ function ReadFilesFromFolder(mainWindow, folderPath) {
         }
         const sortedFolders = folders.sort();
         const sortedItems = sortedFolders.concat(sortedFiles);
+        // Load extMap in JS
+        for (let i = 0; i < Imports_1.extMap.length; i++) {
+            (0, JSRenderer_1.JSDocument)(mainWindow, `extMap.push("${Imports_1.extMap[i]}")`);
+        }
         for (const item of sortedItems) {
             const filePath = path.join(folderPath, item);
             const fileStats = yield fs.promises.stat(filePath);

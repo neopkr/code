@@ -1,4 +1,12 @@
-function appendFile(file) {
+extMap = [] // not working
+
+function appendFile(file, ext = []) {
+  console.log("map")
+  if (ext.length !== 0) {
+    for (let i = 0; i < ext.length; i++) {
+      deleteScripts(ext[i])
+    }
+  }
   const li = document.createElement("li");
   li.classList.add("file");
   li.textContent = file;

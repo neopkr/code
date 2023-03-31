@@ -23,7 +23,8 @@ const languageMap: { [key: string]: string } = {
     'rust': 'rust',
     'typescript': 'typescript',
     'tsx': 'typescript',
-    'jsx': 'javascript'
+    'jsx': 'javascript',
+    'txt': 'plaintext'
 };
 
 

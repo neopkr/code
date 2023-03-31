@@ -37,15 +37,25 @@ function createMenuTesting(mainWindow) {
             label: "Archivo",
             submenu: [
                 {
+                    label: "Nuevo Archivo",
+                    accelerator: process.platform === "darwin" ? "Cmd+N" : "Ctrl+N",
+                },
+                {
+                    type: "separator"
+                },
+                {
                     label: "Abrir",
+                    accelerator: process.platform === "darwin" ? "Cmd+O" : "Ctrl+O",
                     click: () => (0, ReadFile_1.readFile)(mainWindow)
                 },
                 {
                     label: "Abrir Carpeta",
+                    accelerator: process.platform === "darwin" ? "Cmd+Alt+O" : "Ctrl+Alt+O",
                     click: () => (0, FileBar_1.ObtainFilesInExplorer)(mainWindow)
                 },
                 {
                     label: "Guardar",
+                    accelerator: process.platform === "darwin" ? "Cmd+S" : "Ctrl+S",
                     click: () => (0, ReadFile_1.saveFile)(mainWindow)
                 }
             ]
