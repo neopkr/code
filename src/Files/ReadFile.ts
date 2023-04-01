@@ -6,6 +6,7 @@ import { JSDocument, JSParser } from '../WebContent/JSRenderer'
 import { ELogger, getCurrentLine, Logger } from '../Debug/Local'
 import { setLanguage } from './Extension'
 import { setScriptImport } from './Imports'
+import { codeEditor } from '../Editor/Code'
 
 interface IOpenFile {
   name: string | undefined,
@@ -13,7 +14,7 @@ interface IOpenFile {
   relativePath: string
 }
 
-const emptyFile: IOpenFile = { name: "", content: "", relativePath: "" }
+export const emptyFile: IOpenFile = { name: "", content: "", relativePath: "" }
 let currentFile: IOpenFile
 
 async function readFile(mainWindow: BrowserWindow) {
@@ -53,6 +54,7 @@ async function readFile(mainWindow: BrowserWindow) {
       }
 
       currentFile = current;
+      codeEditor.currentFile = current;
       await setScriptImport(mainWindow, current)
       setLanguage(mainWindow, current);
       writeOnTextArea(mainWindow, current);
@@ -118,37 +120,6 @@ async function CompareFiles(mainWindow: BrowserWindow): Promise<boolean> {
     return true
   }
   return false
-}
-
-function FileOpenAskSave() { return; }
-function ReOpenFile() { return; }
-
-async function fileContentIsEmpty(mainWindow: BrowserWindow) {
-  const currentArea = await GetTextArea(mainWindow);
-  if (typeof currentFile === "undefined") {
-    Logger({
-      type: ELogger.Error, void: fileContentIsEmpty.name,
-      line: getCurrentLine(),
-      comment: "File IOpenFile is undefined, loading data..."
-    })
-  }
-  if (currentFile?.name !== "" && currentFile?.content === "") {
-    Logger({
-      type: ELogger.Error, void: fileContentIsEmpty.name,
-      line: getCurrentLine(),
-      comment: "IOpenFile: Has name but no content, saving content."
-    })
-  }
-  if (currentFile?.name === "" && currentFile?.content !== "") {
-    Logger({
-      type: ELogger.Error, void: fileContentIsEmpty.name,
-      line: getCurrentLine(),
-      comment: "IOpenFile: Has content but no name, saving as new file."
-    })
-  }
-  if (currentArea === emptyFile.content) {
-
-  }
 }
 
 function FileIsEmpty(file: IOpenFile) {

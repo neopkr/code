@@ -1,18 +1,20 @@
-import { BrowserWindow, dialog, ipcMain } from "electron"
+import { BrowserWindow, dialog } from "electron"
 import * as fs from 'fs'
 import * as path from 'path'
 import { ELogger, getCurrentLine, Logger } from "../Debug/Local"
+import { codeEditor } from "../Editor/Code";
 import { NotificationsType, spawnNotification, spawnNotificationLogger } from "../Notifications/Notifications";
 import { ReplaceBackSlash } from "../Utils/ConvertSlash";
 import { JSDocument, JSParser } from "../WebContent/JSRenderer";
 import { extMap, onChangeDirDeleteImports } from "./Imports";
 
-interface IFolder { // Create new element string[], read all files from folder and extract theirs respectives .ext for setFolderProjectLangSettingByExt(IFolder.exts)
+export interface IFolder { // Create new element string[], read all files from folder and extract theirs respectives .ext for setFolderProjectLangSettingByExt(IFolder.exts)
   relativePath: string,
   name: string | undefined,
   folders: string[] | undefined;
 }
 
+export const emptyFolder: IFolder = { relativePath: "", name: "", folders: undefined }
 let currentFolder: IFolder;
 
 function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
@@ -29,6 +31,7 @@ function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
           name: folderName,
           folders: undefined
         }
+        codeEditor.currentFolder = currentFolder;
         Logger({
           type: ELogger.Warning,
           void: ObtainFilesInExplorer.name,
@@ -59,6 +62,7 @@ function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
           name: folderName,
           folders: undefined
         }
+        codeEditor.currentFolder = currentFolder;
         Logger({
           type: ELogger.Warning,
           void: ObtainFilesInExplorer.name,
@@ -119,28 +123,19 @@ async function ReadFilesFromFolder(mainWindow: BrowserWindow, folderPath: string
 }
 // QUEDA PENDIENTE HACER QUE LAS CARPETAS SEAN DROPDOWN MENU PARA LOS FILES QUE ESTEN DENTRO DE ELLAS
 
-
-async function isFolder(path: string) {
-  try {
-    const stats = await fs.promises.stat(path);
-    return stats.isDirectory();
-  } catch (error) {
-    // Si hay un error, se asume que la ruta no existe o no se puede acceder a ella
-    return false;
-  }
-}
-
 function SetFolderName(mainWindow: BrowserWindow, folder: IFolder) {
+  console.log(folder.name)
   JSParser(mainWindow, "./src/FileBar.js", `setFolderName(${JSON.stringify(folder.name)});`)
-}
-
-function setFilesInFileBar() {
-
 }
 
 function getFolderName(filePath: string) {
   // E:\dev\code\dist\WebContent
-  const last = filePath.split("\\")
+  let last;
+  if (process.platform == "win32") {
+    last = filePath.split("\\")
+  } else {
+    last = filePath.split("/")
+  }
   return last[last.length - 1]
 }
 export { ObtainFilesInExplorer, currentFolder }

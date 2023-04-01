@@ -1,5 +1,5 @@
 import { BrowserWindow } from "electron";
-import { JSDocument, JSParser } from "../WebContent/JSRenderer";
+import { JSParser } from "../WebContent/JSRenderer";
 import { IOpenFile } from "./ReadFile";
 
 import * as path from 'path'
