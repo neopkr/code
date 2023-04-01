@@ -32,15 +32,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.currentFolder = exports.ObtainFilesInExplorer = void 0;
+exports.currentFolder = exports.ObtainFilesInExplorer = exports.emptyFolder = void 0;
 const electron_1 = require("electron");
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const Local_1 = require("../Debug/Local");
+const Code_1 = require("../Editor/Code");
 const Notifications_1 = require("../Notifications/Notifications");
 const ConvertSlash_1 = require("../Utils/ConvertSlash");
 const JSRenderer_1 = require("../WebContent/JSRenderer");
 const Imports_1 = require("./Imports");
+exports.emptyFolder = { relativePath: "", name: "", folders: undefined };
 let currentFolder;
 exports.currentFolder = currentFolder;
 function ObtainFilesInExplorer(mainWindow) {
@@ -57,6 +59,7 @@ function ObtainFilesInExplorer(mainWindow) {
                     name: folderName,
                     folders: undefined
                 };
+                Code_1.codeEditor.currentFolder = currentFolder;
                 (0, Local_1.Logger)({
                     type: Local_1.ELogger.Warning,
                     void: ObtainFilesInExplorer.name,
@@ -88,6 +91,7 @@ function ObtainFilesInExplorer(mainWindow) {
                     name: folderName,
                     folders: undefined
                 };
+                Code_1.codeEditor.currentFolder = currentFolder;
                 (0, Local_1.Logger)({
                     type: Local_1.ELogger.Warning,
                     void: ObtainFilesInExplorer.name,
@@ -151,25 +155,18 @@ function ReadFilesFromFolder(mainWindow, folderPath) {
     });
 }
 // QUEDA PENDIENTE HACER QUE LAS CARPETAS SEAN DROPDOWN MENU PARA LOS FILES QUE ESTEN DENTRO DE ELLAS
-function isFolder(path) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const stats = yield fs.promises.stat(path);
-            return stats.isDirectory();
-        }
-        catch (error) {
-            // Si hay un error, se asume que la ruta no existe o no se puede acceder a ella
-            return false;
-        }
-    });
-}
 function SetFolderName(mainWindow, folder) {
+    console.log(folder.name);
     (0, JSRenderer_1.JSParser)(mainWindow, "./src/FileBar.js", `setFolderName(${JSON.stringify(folder.name)});`);
-}
-function setFilesInFileBar() {
 }
 function getFolderName(filePath) {
     // E:\dev\code\dist\WebContent
-    const last = filePath.split("\\");
+    let last;
+    if (process.platform == "win32") {
+        last = filePath.split("\\");
+    }
+    else {
+        last = filePath.split("/");
+    }
     return last[last.length - 1];
 }

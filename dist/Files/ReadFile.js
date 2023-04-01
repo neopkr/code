@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.currentFile = exports.saveFile = exports.readFileByPath = exports.readFile = void 0;
+exports.currentFile = exports.saveFile = exports.readFileByPath = exports.readFile = exports.emptyFile = void 0;
 const electron_1 = require("electron");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
@@ -20,7 +20,8 @@ const JSRenderer_1 = require("../WebContent/JSRenderer");
 const Local_1 = require("../Debug/Local");
 const Extension_1 = require("./Extension");
 const Imports_1 = require("./Imports");
-const emptyFile = { name: "", content: "", relativePath: "" };
+const Code_1 = require("../Editor/Code");
+exports.emptyFile = { name: "", content: "", relativePath: "" };
 let currentFile;
 exports.currentFile = currentFile;
 function readFile(mainWindow) {
@@ -56,6 +57,7 @@ function readFile(mainWindow) {
                     return;
                 }
                 exports.currentFile = currentFile = current;
+                Code_1.codeEditor.currentFile = current;
                 yield (0, Imports_1.setScriptImport)(mainWindow, current);
                 (0, Extension_1.setLanguage)(mainWindow, current);
                 writeOnTextArea(mainWindow, current);
@@ -124,38 +126,8 @@ function CompareFiles(mainWindow) {
         return false;
     });
 }
-function FileOpenAskSave() { return; }
-function ReOpenFile() { return; }
-function fileContentIsEmpty(mainWindow) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const currentArea = yield GetTextArea(mainWindow);
-        if (typeof currentFile === "undefined") {
-            (0, Local_1.Logger)({
-                type: Local_1.ELogger.Error, void: fileContentIsEmpty.name,
-                line: (0, Local_1.getCurrentLine)(),
-                comment: "File IOpenFile is undefined, loading data..."
-            });
-        }
-        if ((currentFile === null || currentFile === void 0 ? void 0 : currentFile.name) !== "" && (currentFile === null || currentFile === void 0 ? void 0 : currentFile.content) === "") {
-            (0, Local_1.Logger)({
-                type: Local_1.ELogger.Error, void: fileContentIsEmpty.name,
-                line: (0, Local_1.getCurrentLine)(),
-                comment: "IOpenFile: Has name but no content, saving content."
-            });
-        }
-        if ((currentFile === null || currentFile === void 0 ? void 0 : currentFile.name) === "" && (currentFile === null || currentFile === void 0 ? void 0 : currentFile.content) !== "") {
-            (0, Local_1.Logger)({
-                type: Local_1.ELogger.Error, void: fileContentIsEmpty.name,
-                line: (0, Local_1.getCurrentLine)(),
-                comment: "IOpenFile: Has content but no name, saving as new file."
-            });
-        }
-        if (currentArea === emptyFile.content) {
-        }
-    });
-}
 function FileIsEmpty(file) {
-    if (file.content === emptyFile.content && file.name === emptyFile.name) {
+    if (file.content === exports.emptyFile.content && file.name === exports.emptyFile.name) {
         return true;
     }
     return false;
