@@ -3,7 +3,7 @@
 
 The editor is the same that use [Visual Studio Code](https://github.com/microsoft/vscode), [Monaco Editor](https://github.com/microsoft/monaco-editor).
 
-#### Current project version: v20230331.1 Unstable
+### Current project version: v20230331.1 Unstable
 Some features can destroy the html or directly crash the program, and the code is fully compatible with windows but not with others operating system like Unix, Darwin (MacOS)
 
 ## Features (Update v20230331.1)
