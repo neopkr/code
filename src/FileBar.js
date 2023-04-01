@@ -1,7 +1,6 @@
 extMap = [] // not working
 
 function appendFile(file, ext = []) {
-  console.log("map")
   if (ext.length !== 0) {
     for (let i = 0; i < ext.length; i++) {
       deleteScripts(ext[i])
@@ -11,6 +10,7 @@ function appendFile(file, ext = []) {
   li.classList.add("file");
   li.textContent = file;
   document.getElementById("file-content").appendChild(li);
+  document.getElementById("file-content").style.overflowY = "auto";
 }
 
 function deleteFile() {

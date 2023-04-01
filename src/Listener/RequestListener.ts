@@ -1,19 +1,13 @@
 import { BrowserWindow, ipcMain } from "electron";
-import { currentFolder, emptyFolder } from "../Files/FileBar";
-import { emptyFile, readFileByPath } from "../Files/ReadFile";
-import { codeEditor, getCurrentOS } from "../Editor/Code";
+import { currentFolder } from "../Files/FileBar";
+import { readFileByPath } from "../Files/ReadFile";
 
 import * as fs from 'fs'
+import { getCurrentOS, Plarform } from "../Editor/Code";
+import { setSlashLocalOS } from "../Utils/ConvertSlash";
 
 function RequestListener() {
-    // This probably don't need to be here, but for the moment.
-    codeEditor.rootPath = "";
-    codeEditor.title = "Code";
-    codeEditor.currentOS = getCurrentOS();
-    codeEditor.version = 20230331.1;
-    codeEditor.currentFile = emptyFile;
-    codeEditor.currentFolder = emptyFolder;
-    codeEditor._debug = true;
+    return;
 }
 
 function RequestListenerOnReady(mainWindow: BrowserWindow) {
@@ -31,20 +25,21 @@ async function SelectedFile(mainWindow: BrowserWindow) {
         const foldersInPath = currentFolder.folders;
         if (typeof currentFolder.folders !== "undefined") {
             for (let i = 0; i < foldersInPath!.length; i++) {
-                foldersInPath![i] = foldersInPath![i] + "\\";
+                foldersInPath![i] = foldersInPath![i] + setSlashLocalOS();
             }
         }
 
 
-        let filePath = `${currentFolder.relativePath}\\${text}`
+        let filePath = `${currentFolder.relativePath}${setSlashLocalOS()}${text}`
 
         if (typeof currentFolder.folders !== "undefined") {
             for (let i = 0; i < foldersInPath!.length; i++) {
-                if (fs.existsSync(`${currentFolder.relativePath}\\${foldersInPath![i]}\\${text}`)) {
-                    filePath = `${currentFolder.relativePath}\\${foldersInPath![i]}\\${text}`
+                if (fs.existsSync(`${currentFolder.relativePath}${setSlashLocalOS()}${foldersInPath![i]}${setSlashLocalOS()}${text}`)) {
+                    filePath = `${currentFolder.relativePath}${setSlashLocalOS()}${foldersInPath![i]}${setSlashLocalOS()}${text}`
                 }
             }
         }
+
         console.log(filePath)
         readFileByPath(mainWindow, filePath)
         // Elimina el manejador de eventos una vez que se ha procesado la información

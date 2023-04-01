@@ -18,6 +18,7 @@ amdRequire.config({
 
 // workaround monaco-css not understanding the environment
 self.module = undefined;
+
 var editor;
 amdRequire(['vs/editor/editor.main'], function () {
   editor = monaco.editor.create(document.getElementById('editor'), {

@@ -6,7 +6,6 @@ import { JSDocument, JSParser } from '../WebContent/JSRenderer'
 import { ELogger, getCurrentLine, Logger } from '../Debug/Local'
 import { setLanguage } from './Extension'
 import { setScriptImport } from './Imports'
-import { codeEditor } from '../Editor/Code'
 
 interface IOpenFile {
   name: string | undefined,
@@ -54,7 +53,6 @@ async function readFile(mainWindow: BrowserWindow) {
       }
 
       currentFile = current;
-      codeEditor.currentFile = current;
       await setScriptImport(mainWindow, current)
       setLanguage(mainWindow, current);
       writeOnTextArea(mainWindow, current);

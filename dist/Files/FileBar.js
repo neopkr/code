@@ -37,7 +37,6 @@ const electron_1 = require("electron");
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const Local_1 = require("../Debug/Local");
-const Code_1 = require("../Editor/Code");
 const Notifications_1 = require("../Notifications/Notifications");
 const ConvertSlash_1 = require("../Utils/ConvertSlash");
 const JSRenderer_1 = require("../WebContent/JSRenderer");
@@ -59,7 +58,6 @@ function ObtainFilesInExplorer(mainWindow) {
                     name: folderName,
                     folders: undefined
                 };
-                Code_1.codeEditor.currentFolder = currentFolder;
                 (0, Local_1.Logger)({
                     type: Local_1.ELogger.Warning,
                     void: ObtainFilesInExplorer.name,
@@ -91,7 +89,6 @@ function ObtainFilesInExplorer(mainWindow) {
                     name: folderName,
                     folders: undefined
                 };
-                Code_1.codeEditor.currentFolder = currentFolder;
                 (0, Local_1.Logger)({
                     type: Local_1.ELogger.Warning,
                     void: ObtainFilesInExplorer.name,

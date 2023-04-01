@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCurrentOS = exports.codeEditor = exports.Plarform = void 0;
+exports.getCurrentOS = exports.Plarform = void 0;
 var Plarform;
 (function (Plarform) {
     Plarform["win32"] = "win32";

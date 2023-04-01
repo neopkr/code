@@ -36,17 +36,10 @@ exports.RequestListenerOnReady = exports.RequestListener = void 0;
 const electron_1 = require("electron");
 const FileBar_1 = require("../Files/FileBar");
 const ReadFile_1 = require("../Files/ReadFile");
-const Code_1 = require("../Editor/Code");
 const fs = __importStar(require("fs"));
+const ConvertSlash_1 = require("../Utils/ConvertSlash");
 function RequestListener() {
-    // This probably don't need to be here, but for the moment.
-    Code_1.codeEditor.rootPath = "";
-    Code_1.codeEditor.title = "Code";
-    Code_1.codeEditor.currentOS = (0, Code_1.getCurrentOS)();
-    Code_1.codeEditor.version = 20230331.1;
-    Code_1.codeEditor.currentFile = ReadFile_1.emptyFile;
-    Code_1.codeEditor.currentFolder = FileBar_1.emptyFolder;
-    Code_1.codeEditor._debug = true;
+    return;
 }
 exports.RequestListener = RequestListener;
 function RequestListenerOnReady(mainWindow) {
@@ -63,14 +56,14 @@ function SelectedFile(mainWindow) {
             const foldersInPath = FileBar_1.currentFolder.folders;
             if (typeof FileBar_1.currentFolder.folders !== "undefined") {
                 for (let i = 0; i < foldersInPath.length; i++) {
-                    foldersInPath[i] = foldersInPath[i] + "\\";
+                    foldersInPath[i] = foldersInPath[i] + (0, ConvertSlash_1.setSlashLocalOS)();
                 }
             }
-            let filePath = `${FileBar_1.currentFolder.relativePath}\\${text}`;
+            let filePath = `${FileBar_1.currentFolder.relativePath}${(0, ConvertSlash_1.setSlashLocalOS)()}${text}`;
             if (typeof FileBar_1.currentFolder.folders !== "undefined") {
                 for (let i = 0; i < foldersInPath.length; i++) {
-                    if (fs.existsSync(`${FileBar_1.currentFolder.relativePath}\\${foldersInPath[i]}\\${text}`)) {
-                        filePath = `${FileBar_1.currentFolder.relativePath}\\${foldersInPath[i]}\\${text}`;
+                    if (fs.existsSync(`${FileBar_1.currentFolder.relativePath}${(0, ConvertSlash_1.setSlashLocalOS)()}${foldersInPath[i]}${(0, ConvertSlash_1.setSlashLocalOS)()}${text}`)) {
+                        filePath = `${FileBar_1.currentFolder.relativePath}${(0, ConvertSlash_1.setSlashLocalOS)()}${foldersInPath[i]}${(0, ConvertSlash_1.setSlashLocalOS)()}${text}`;
                     }
                 }
             }

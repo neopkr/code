@@ -2,7 +2,6 @@ import { BrowserWindow, dialog } from "electron"
 import * as fs from 'fs'
 import * as path from 'path'
 import { ELogger, getCurrentLine, Logger } from "../Debug/Local"
-import { codeEditor } from "../Editor/Code";
 import { NotificationsType, spawnNotification, spawnNotificationLogger } from "../Notifications/Notifications";
 import { ReplaceBackSlash } from "../Utils/ConvertSlash";
 import { JSDocument, JSParser } from "../WebContent/JSRenderer";
@@ -31,7 +30,6 @@ function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
           name: folderName,
           folders: undefined
         }
-        codeEditor.currentFolder = currentFolder;
         Logger({
           type: ELogger.Warning,
           void: ObtainFilesInExplorer.name,
@@ -62,7 +60,6 @@ function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
           name: folderName,
           folders: undefined
         }
-        codeEditor.currentFolder = currentFolder;
         Logger({
           type: ELogger.Warning,
           void: ObtainFilesInExplorer.name,

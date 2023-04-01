@@ -20,7 +20,6 @@ const JSRenderer_1 = require("../WebContent/JSRenderer");
 const Local_1 = require("../Debug/Local");
 const Extension_1 = require("./Extension");
 const Imports_1 = require("./Imports");
-const Code_1 = require("../Editor/Code");
 exports.emptyFile = { name: "", content: "", relativePath: "" };
 let currentFile;
 exports.currentFile = currentFile;
@@ -57,7 +56,6 @@ function readFile(mainWindow) {
                     return;
                 }
                 exports.currentFile = currentFile = current;
-                Code_1.codeEditor.currentFile = current;
                 yield (0, Imports_1.setScriptImport)(mainWindow, current);
                 (0, Extension_1.setLanguage)(mainWindow, current);
                 writeOnTextArea(mainWindow, current);
