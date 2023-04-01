@@ -3,8 +3,16 @@
 
 The editor is the same that use [Visual Studio Code](https://github.com/microsoft/vscode), [Monaco Editor](https://github.com/microsoft/monaco-editor).
 
-## Features
-- Read Files / Folders
+## Features (Update v20230331.1)
+- Notifications Popup
+- Create Files
+- Read Files/Folders
+- Save Current File (CMD+S, CTRL+S)
+- Menubar Shortcuts
+- Filebar Update
+  * Now you can click the file and the file will be load in the editor
+  * Filebar will read files inside of subfolders and can be loaded on the project
+  * If any js file has module, the module will be imported in the html.
 - Monaco Editor
 
 *Project is relative new, so with the updates i will adding more features.*
@@ -14,18 +22,15 @@ Currently i don't have any script or installer so...
 ```sh
 > git clone https://github.com/neopkr/code.git
 > cd code
-> node ci
+> npm ci
 > npm run start
 ```
 
 ## To do
-- Saving Files
 - Save As
-- Imports (NodeJS Modules or modules ES6)
+- Imports (as CommonJS or ES6) (Current Working In)
 - HTML, CSS
 - Terminal
-- Check Files for Read/Save functions
-- Open the respective file when you click in the filename.
 - Etc.
 
 ## Feedback
