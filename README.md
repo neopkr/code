@@ -44,3 +44,15 @@ If you want contribute, submit a pull request! All contributions are accepted.
 
 ## License
 "Code", Licensed under the [MIT](https://github.com/neopkr/code/blob/main/LICENSE) license.
+
+# Not forget
+```js
+   monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+        experimentalDecorators: true,
+        allowSyntheticDefaultImports: true,
+        jsx: this.monaco.languages.typescript.JsxEmit.React,
+        moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+        allowNonTsExtensions: true,
+        target: monaco.languages.typescript.ScriptTarget.ES2020,
+   });
+```
