@@ -1,5 +1,5 @@
 # Code
-"Code" is a code editor made by me for educational purposes. Main script was made with Typescript, NodeJS using Electron. This project is fully influenced in the code editor called [Visual Studio Code](https://github.com/microsoft/vscode).
+"Code" is a code editor made from scratch by me for educational purposes. Main script was made with Typescript, NodeJS using Electron. This project is fully influenced in the code editor called [Visual Studio Code](https://github.com/microsoft/vscode).
 
 The editor is the same that use [Visual Studio Code](https://github.com/microsoft/vscode), [Monaco Editor](https://github.com/microsoft/monaco-editor).
 
@@ -45,7 +45,8 @@ If you want contribute, submit a pull request! All contributions are accepted.
 ## License
 "Code", Licensed under the [MIT](https://github.com/neopkr/code/blob/main/LICENSE) license.
 
-# Not forget
+## Not forget
+If u seeing this is because i need put it in my code but i'm to lazy :)
 ```js
    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
         experimentalDecorators: true,
