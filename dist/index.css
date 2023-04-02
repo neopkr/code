@@ -20,7 +20,6 @@ body {
   height: 100%;
   background-color: #20232a;
   color: white;
-  overflow-y: auto;
 }
 
 .sidebar-content {

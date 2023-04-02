@@ -38,17 +38,20 @@ const FileBar_1 = require("../Files/FileBar");
 const ReadFile_1 = require("../Files/ReadFile");
 const fs = __importStar(require("fs"));
 const ConvertSlash_1 = require("../Utils/ConvertSlash");
+const Worker_1 = require("../Worker/Worker");
 function RequestListener() {
     return;
 }
 exports.RequestListener = RequestListener;
 function RequestListenerOnReady(mainWindow) {
-    SelectedFile(mainWindow);
+    return __awaiter(this, void 0, void 0, function* () {
+        SelectedFile(mainWindow);
+    });
 }
 exports.RequestListenerOnReady = RequestListenerOnReady;
 function SelectedFile(mainWindow) {
     return __awaiter(this, void 0, void 0, function* () {
-        electron_1.ipcMain.on("files", (e, d) => {
+        electron_1.ipcMain.on("files", (e, d) => __awaiter(this, void 0, void 0, function* () {
             const { text } = d;
             if (text.includes("/")) {
                 return;
@@ -69,8 +72,9 @@ function SelectedFile(mainWindow) {
             }
             console.log(filePath);
             (0, ReadFile_1.readFileByPath)(mainWindow, filePath);
+            yield (0, Worker_1.langTypescript)(mainWindow);
             // Elimina el manejador de eventos una vez que se ha procesado la información
             electron_1.ipcMain.removeListener("files", SelectedFile);
-        });
+        }));
     });
 }

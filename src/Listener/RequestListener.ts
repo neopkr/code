@@ -5,17 +5,19 @@ import { readFileByPath } from "../Files/ReadFile";
 import * as fs from 'fs'
 import { getCurrentOS, Plarform } from "../Editor/Code";
 import { setSlashLocalOS } from "../Utils/ConvertSlash";
+import { langTypescript } from "../Worker/Worker";
 
 function RequestListener() {
     return;
 }
 
-function RequestListenerOnReady(mainWindow: BrowserWindow) {
+async function RequestListenerOnReady(mainWindow: BrowserWindow) {
     SelectedFile(mainWindow);
+
 }
 
 async function SelectedFile(mainWindow: BrowserWindow) {
-    ipcMain.on("files", (e, d) => {
+    ipcMain.on("files", async (e, d) => {
         const { text } = d;
 
         if (text.includes("/")) {
@@ -42,6 +44,7 @@ async function SelectedFile(mainWindow: BrowserWindow) {
 
         console.log(filePath)
         readFileByPath(mainWindow, filePath)
+        await langTypescript(mainWindow)
         // Elimina el manejador de eventos una vez que se ha procesado la información
         ipcMain.removeListener("files", SelectedFile);
     });

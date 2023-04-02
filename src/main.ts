@@ -4,7 +4,7 @@ import { CreateWindow } from './Window/Window';
 
 RequestListener();
 
-app.on('ready', () => {
+app.on('ready', async () => {
     const _window = CreateWindow();
-    RequestListenerOnReady(_window);
+    await RequestListenerOnReady(_window);
 })
