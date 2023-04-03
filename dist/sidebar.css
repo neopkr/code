@@ -1,0 +1,167 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css");
+
+:root {
+    --primary-color: #D96AA7;
+    --secondary-color: #422C73;
+    --complimentary-color: #88BFB5;
+    --contrast-color: #F2E527;
+    --light-color: #D2A9D9;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #1d1d1d;
+    font-family: monospace;
+}
+
+/* color: #ccc is a good color for light theme */
+.sb-container {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 42%;
+}
+
+
+.icon-sb-container {
+    background-color: #1d1d1d;
+    height: 100%;
+    width: 50px;
+}
+
+.icon-sb {
+    font-size: 20px;
+    margin: 10px 0;
+    text-align: center;
+    transition: color 0.3s;
+}
+
+.icon {
+    cursor: pointer;
+}
+
+.icon:hover {
+    fill: #D96AA7;
+    transition: fill 0.1s;
+}
+
+.icon-active {
+    fill: #D96AA7;
+}
+
+
+/* SIDEBAR EXPLORER */
+
+.sb-explorer {
+    background-color: #1d1d1d;
+    color: #ccc;
+    height: 100%;
+    padding: 10px;
+    width: calc(100% - 50px);
+    /* ajusta el ancho para compensar el ancho del icon-sb-container */
+    max-width: 300px;
+}
+
+
+.explorer-text {
+    color: #ccc;
+    opacity: 0.2;
+    margin-bottom: 8px;
+}
+
+.project-name {
+    display: inline-block;
+    min-width: 100px;
+    max-width: 200px;
+}
+
+.arrow-file {
+    display: inline-flex;
+}
+
+.files-container {
+    margin-top: 10px;
+    padding-left: 12px;
+}
+
+/* EDITOR CONTAINER */
+
+.editor-container {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: calc(100% - 300px);
+    max-width: calc(100% - 300px);
+    height: 100%;
+    overflow: hidden;
+    bottom: 50px;
+    /* nuevo */
+}
+
+#editor {
+    height: 100%;
+    min-height: 500px;
+    padding: 10px;
+}
+
+/* FOOTER */
+.editor-info {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    /* nuevo */
+    background-color: #1d1d1d;
+    color: #ccc;
+    display: flex;
+    justify-content:space-between;
+    padding: 10px;
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: right;
+    height: 3%;
+}
+
+.line-numbers-container {
+    display: inline-block;
+    text-align: right;
+    width: 40px;
+    counter-reset: lines;
+  }
+  
+  .line-number {
+    counter-increment: lines;
+    content: counter(lines);
+    display: block;
+    white-space: pre;
+    opacity: 0.6;
+  }
+  
+  .spaces {
+    display: inline-block;
+    width: 8px;
+    opacity: 0.6;
+  }
+  
+  .utf8 {
+    display: inline-block;
+    margin-left: 10px;
+    opacity: 0.6;
+  }
+  
+  .language {
+    display: inline-block;
+    margin-right: 10px;
+    opacity: 0.6;
+  }
+  
+  
+  

@@ -153,7 +153,6 @@ function ReadFilesFromFolder(mainWindow, folderPath) {
 }
 // QUEDA PENDIENTE HACER QUE LAS CARPETAS SEAN DROPDOWN MENU PARA LOS FILES QUE ESTEN DENTRO DE ELLAS
 function SetFolderName(mainWindow, folder) {
-    console.log(folder.name);
     (0, JSRenderer_1.JSParser)(mainWindow, "./src/FileBar.js", `setFolderName(${JSON.stringify(folder.name)});`);
 }
 function getFolderName(filePath) {

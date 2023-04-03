@@ -16,7 +16,7 @@ export function CreateWindow(width: number = 1400, height: number = 800, title: 
         }
     });
 
-    _window.loadFile(path.join(__dirname, "../index.html"))
+    _window.loadFile(path.join(__dirname, "../indexDesign.html"))
     _window.webContents.openDevTools();
     createMenuTesting(_window)
 

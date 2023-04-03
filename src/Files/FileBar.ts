@@ -121,7 +121,6 @@ async function ReadFilesFromFolder(mainWindow: BrowserWindow, folderPath: string
 // QUEDA PENDIENTE HACER QUE LAS CARPETAS SEAN DROPDOWN MENU PARA LOS FILES QUE ESTEN DENTRO DE ELLAS
 
 function SetFolderName(mainWindow: BrowserWindow, folder: IFolder) {
-  console.log(folder.name)
   JSParser(mainWindow, "./src/FileBar.js", `setFolderName(${JSON.stringify(folder.name)});`)
 }
 

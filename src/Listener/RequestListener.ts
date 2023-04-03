@@ -3,7 +3,6 @@ import { currentFolder } from "../Files/FileBar";
 import { readFileByPath } from "../Files/ReadFile";
 
 import * as fs from 'fs'
-import { getCurrentOS, Plarform } from "../Editor/Code";
 import { setSlashLocalOS } from "../Utils/ConvertSlash";
 import { langTypescript } from "../Worker/Worker";
 
@@ -42,7 +41,6 @@ async function SelectedFile(mainWindow: BrowserWindow) {
             }
         }
 
-        console.log(filePath)
         readFileByPath(mainWindow, filePath)
         await langTypescript(mainWindow)
         // Elimina el manejador de eventos una vez que se ha procesado la información

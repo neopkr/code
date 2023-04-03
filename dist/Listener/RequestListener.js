@@ -70,7 +70,6 @@ function SelectedFile(mainWindow) {
                     }
                 }
             }
-            console.log(filePath);
             (0, ReadFile_1.readFileByPath)(mainWindow, filePath);
             yield (0, Worker_1.langTypescript)(mainWindow);
             // Elimina el manejador de eventos una vez que se ha procesado la información

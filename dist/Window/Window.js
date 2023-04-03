@@ -38,7 +38,7 @@ function CreateWindow(width = 1400, height = 800, title = "Code") {
             webSecurity: false
         }
     });
-    _window.loadFile(path.join(__dirname, "../index.html"));
+    _window.loadFile(path.join(__dirname, "../indexDesign.html"));
     _window.webContents.openDevTools();
     (0, Menu_1.createMenuTesting)(_window);
     return _window;

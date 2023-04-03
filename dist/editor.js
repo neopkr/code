@@ -21,12 +21,34 @@ self.module = undefined;
 
 var editor;
 amdRequire(['vs/editor/editor.main'], function () {
+  // SET DEFAULTS ON EDITOR-INFO
+
+  var editorInfoDefault = {
+    lines: 1,
+    column: 1,
+    spaces: 0,
+    language: "",
+  }
+  document.getElementById("line-number").textContent = `Lin. ${editorInfoDefault.lines}, col. ${editorInfoDefault.column}`
+  document.getElementById("spaces").textContent = `Espacios: ${editorInfoDefault.spaces}`
   editor = monaco.editor.create(document.getElementById('editor'), {
-    value: ['function x() {', '\tconsole.log("Hello world!");', '}'].join('\n'),
-    language: 'javascript',
+    language: 'html',
     theme: "vs-dark"
   });
   window.addEventListener("resize", function () {
     editor.layout();
+  });
+
+  var editorInfo = {
+    lines: 1
+  };
+
+  editor.getModel().onDidChangeContent(function () {
+    var lineCount = editor.getModel().getLineCount();
+    if (editorInfo.lines !== lineCount) {
+      editorInfo.lines = lineCount;
+      // Actualizar el número de líneas en el DOM
+      document.getElementById("line-number").textContent = lineCount;
+    }
   });
 });
