@@ -1,4 +1,3 @@
-
 const path = require('path');
 const amdLoader = require('../node_modules/monaco-editor/min/vs/loader.js');
 const amdRequire = amdLoader.require;
@@ -29,26 +28,27 @@ amdRequire(['vs/editor/editor.main'], function () {
     spaces: 0,
     language: "",
   }
+
+  var $ = (el) => { return document.getElementById(el) }
+
+  var maxLineNumber = $("line-number")
+  var spaces = $("spaces")
+
   document.getElementById("line-number").textContent = `Lin. ${editorInfoDefault.lines}, col. ${editorInfoDefault.column}`
   document.getElementById("spaces").textContent = `Espacios: ${editorInfoDefault.spaces}`
   editor = monaco.editor.create(document.getElementById('editor'), {
     language: 'html',
     theme: "vs-dark"
   });
+
   window.addEventListener("resize", function () {
     editor.layout();
   });
 
-  var editorInfo = {
-    lines: 1
-  };
+  model = editor.getModel()
 
-  editor.getModel().onDidChangeContent(function () {
-    var lineCount = editor.getModel().getLineCount();
-    if (editorInfo.lines !== lineCount) {
-      editorInfo.lines = lineCount;
-      // Actualizar el número de líneas en el DOM
-      document.getElementById("line-number").textContent = lineCount;
-    }
-  });
+  editor.onDidChangeCursorSelection(() => {
+    var position = editor.getPosition();
+    maxLineNumber.textContent = `Lin. ${position.lineNumber}, col. ${position.column}`
+  })
 });

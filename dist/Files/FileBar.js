@@ -66,7 +66,7 @@ function ObtainFilesInExplorer(mainWindow) {
                 });
                 (0, Notifications_1.spawnNotificationLogger)(mainWindow, Notifications_1.NotificationsType.Warning, `Changing folder: ${(0, ConvertSlash_1.ReplaceBackSlash)(currentFolder.relativePath)} is new folder.`);
                 SetFolderName(mainWindow, currentFolder);
-                yield ReadFilesFromFolder(mainWindow, folderPath);
+                console.log(yield WReadFilesFromFolder__(folderPath));
             }
             else {
                 // check folder path is same
@@ -98,7 +98,7 @@ function ObtainFilesInExplorer(mainWindow) {
                 yield (0, Imports_1.onChangeDirDeleteImports)(mainWindow);
                 (0, Notifications_1.spawnNotificationLogger)(mainWindow, Notifications_1.NotificationsType.Warning, `Changing folder: ${(0, ConvertSlash_1.ReplaceBackSlash)(currentFolder.relativePath)} is new folder.`);
                 SetFolderName(mainWindow, currentFolder);
-                yield ReadFilesFromFolder(mainWindow, folderPath);
+                console.log(yield WReadFilesFromFolder__(folderPath));
                 yield (0, Imports_1.onChangeDirDeleteImports)(mainWindow);
             }
         }
@@ -152,6 +152,43 @@ function ReadFilesFromFolder(mainWindow, folderPath) {
     });
 }
 // QUEDA PENDIENTE HACER QUE LAS CARPETAS SEAN DROPDOWN MENU PARA LOS FILES QUE ESTEN DENTRO DE ELLAS
+function WReadFilesFromFolder__(folderPath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let files;
+        try {
+            files = yield fs.promises.readdir(folderPath);
+        }
+        catch (err) {
+            console.log(err);
+            return [];
+        }
+        const folders = [];
+        const sortedFiles = [];
+        for (const file of files) {
+            const filePath = path.join(folderPath, file);
+            const fileStats = yield fs.promises.stat(filePath);
+            if (fileStats.isDirectory()) {
+                folders.push(file);
+            }
+            else {
+                sortedFiles.push(file);
+            }
+        }
+        const sortedFolders = folders.sort();
+        const sortedItems = sortedFolders.concat(sortedFiles);
+        const result = [[path.basename(folderPath), ...sortedItems]];
+        for (const item of sortedItems) {
+            const filePath = path.join(folderPath, item);
+            const fileStats = yield fs.promises.stat(filePath);
+            const isDirectory = fileStats.isDirectory();
+            if (isDirectory) {
+                const subFolder = yield WReadFilesFromFolder__(filePath);
+                result.push(subFolder.flat());
+            }
+        }
+        return result;
+    });
+}
 function SetFolderName(mainWindow, folder) {
     (0, JSRenderer_1.JSParser)(mainWindow, "./src/FileBar.js", `setFolderName(${JSON.stringify(folder.name)});`);
 }

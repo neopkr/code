@@ -92,6 +92,56 @@ body {
     padding-left: 12px;
 }
 
+.file {
+    font-size: 15px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 5px;
+    cursor: pointer;
+}
+
+.in-folder {
+    padding-left: 15px;
+    display: none;
+}
+
+.in-file-show {
+    display:block;
+}
+
+.file:hover {
+    color:#D96AA7;
+    transition: color 0.2s;
+}
+
+.file-is-active {
+    color: #D96AA7;
+    box-shadow: 0 0 0 1px rgba(204, 204, 204, 0.2);
+    background-color: rgba(204, 204, 204, 0.2);
+    transition: color 0.2s;
+    transition: background-color 0.2s;
+
+}
+
+/*
+* THIS IS CALLED WHEN YOU SELECT THE FILE IN SIDEBAR (or filebar). PD: Need to implements in javascript
+*/
+.file-current-editing {
+    box-shadow: 0 0 0 1px rgba(204, 204, 204, 0.08);
+    background-color: rgba(204, 204, 204, 0.08);
+    opacity: 0.7;
+    transition: color 0.2s;
+    transition: background-color 0.2s;
+}
+
+.file-current-out-active {
+    box-shadow: 0 0 0 1px rgba(204, 204, 204, 0.08);
+    background-color: rgba(204, 204, 204, 0.08);
+    opacity: 0.7;
+    transition: color 0.2s;
+    transition: background-color 0.2s;
+}
+
 /* EDITOR CONTAINER */
 
 .editor-container {
@@ -122,7 +172,7 @@ body {
     background-color: #1d1d1d;
     color: #ccc;
     display: flex;
-    justify-content:space-between;
+    justify-content: space-between;
     padding: 10px;
     font-size: 12px;
     font-family: Arial, Helvetica, sans-serif;
@@ -135,33 +185,30 @@ body {
     text-align: right;
     width: 40px;
     counter-reset: lines;
-  }
-  
-  .line-number {
+}
+
+.line-number {
     counter-increment: lines;
     content: counter(lines);
     display: block;
     white-space: pre;
     opacity: 0.6;
-  }
-  
-  .spaces {
+}
+
+.spaces {
     display: inline-block;
     width: 8px;
     opacity: 0.6;
-  }
-  
-  .utf8 {
+}
+
+.utf8 {
     display: inline-block;
     margin-left: 10px;
     opacity: 0.6;
-  }
-  
-  .language {
+}
+
+.language {
     display: inline-block;
     margin-right: 10px;
     opacity: 0.6;
-  }
-  
-  
-  
+}

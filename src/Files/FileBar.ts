@@ -38,7 +38,7 @@ function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
         })
         spawnNotificationLogger(mainWindow, NotificationsType.Warning, `Changing folder: ${ReplaceBackSlash(currentFolder.relativePath)} is new folder.`)
         SetFolderName(mainWindow, currentFolder)
-        await ReadFilesFromFolder(mainWindow, folderPath)
+        console.log(await WReadFilesFromFolder__(folderPath))
       } else {
         // check folder path is same
         if (currentFolder.relativePath === folderPath && currentFolder.name == folderName) {
@@ -69,9 +69,9 @@ function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
         await onChangeDirDeleteImports(mainWindow)
         spawnNotificationLogger(mainWindow, NotificationsType.Warning, `Changing folder: ${ReplaceBackSlash(currentFolder.relativePath)} is new folder.`)
         SetFolderName(mainWindow, currentFolder)
-        await ReadFilesFromFolder(mainWindow, folderPath)
+        console.log(await WReadFilesFromFolder__(folderPath))
         await onChangeDirDeleteImports(mainWindow)
-        
+
       }
     }
   }).catch(err => {
@@ -119,6 +119,40 @@ async function ReadFilesFromFolder(mainWindow: BrowserWindow, folderPath: string
   }
 }
 // QUEDA PENDIENTE HACER QUE LAS CARPETAS SEAN DROPDOWN MENU PARA LOS FILES QUE ESTEN DENTRO DE ELLAS
+
+async function WReadFilesFromFolder__(folderPath: string) {
+  let files: string[];
+  try {
+    files = await fs.promises.readdir(folderPath);
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+  const folders: string[] = [];
+  const sortedFiles: string[] = [];
+  for (const file of files) {
+    const filePath = path.join(folderPath, file);
+    const fileStats = await fs.promises.stat(filePath);
+    if (fileStats.isDirectory()) {
+      folders.push(file);
+    } else {
+      sortedFiles.push(file);
+    }
+  }
+  const sortedFolders = folders.sort();
+  const sortedItems = sortedFolders.concat(sortedFiles);
+  const result: Array<Array<string>> = [[path.basename(folderPath), ...sortedItems]];
+  for (const item of sortedItems) {
+    const filePath = path.join(folderPath, item);
+    const fileStats = await fs.promises.stat(filePath);
+    const isDirectory = fileStats.isDirectory();
+    if (isDirectory) {
+      const subFolder = await WReadFilesFromFolder__(filePath);
+      result.push(subFolder.flat());
+    }
+  }
+  return result;
+}
 
 function SetFolderName(mainWindow: BrowserWindow, folder: IFolder) {
   JSParser(mainWindow, "./src/FileBar.js", `setFolderName(${JSON.stringify(folder.name)});`)
