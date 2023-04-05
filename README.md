@@ -20,6 +20,8 @@ Some features can destroy the html or directly crash the program, and the code i
 
 *Project is relative new, so with the updates i will adding more features.*
 
+![](https://github.com/neopkr/code/blob/main/assets/asset2.png)
+
 ## Installation
 Currently i don't have any script or installer so...
 ```sh
