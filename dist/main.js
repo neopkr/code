@@ -12,8 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 const RequestListener_1 = require("./Listener/RequestListener");
 const Window_1 = require("./Window/Window");
+const Notifications_1 = require("./Notifications/Notifications");
 (0, RequestListener_1.RequestListener)();
 electron_1.app.on('ready', () => __awaiter(void 0, void 0, void 0, function* () {
     const _window = (0, Window_1.CreateWindow)();
     yield (0, RequestListener_1.RequestListenerOnReady)(_window);
+    (0, Notifications_1.spawnNotificationLogger)(_window, Notifications_1.NotificationsType.Info, "Listener: Requesting called, starting loader js.");
 }));

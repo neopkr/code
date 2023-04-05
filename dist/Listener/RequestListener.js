@@ -39,6 +39,8 @@ const ReadFile_1 = require("../Files/ReadFile");
 const fs = __importStar(require("fs"));
 const ConvertSlash_1 = require("../Utils/ConvertSlash");
 const Worker_1 = require("../Worker/Worker");
+const JSRenderer_1 = require("../WebContent/JSRenderer");
+const Notifications_1 = require("../Notifications/Notifications");
 function RequestListener() {
     return;
 }
@@ -46,6 +48,7 @@ exports.RequestListener = RequestListener;
 function RequestListenerOnReady(mainWindow) {
     return __awaiter(this, void 0, void 0, function* () {
         SelectedFile(mainWindow);
+        getCommandsDebug(mainWindow);
     });
 }
 exports.RequestListenerOnReady = RequestListenerOnReady;
@@ -74,6 +77,37 @@ function SelectedFile(mainWindow) {
             yield (0, Worker_1.langTypescript)(mainWindow);
             // Elimina el manejador de eventos una vez que se ha procesado la información
             electron_1.ipcMain.removeListener("files", SelectedFile);
+        }));
+    });
+}
+function getCommandsDebug(mainWindow) {
+    return __awaiter(this, void 0, void 0, function* () {
+        electron_1.ipcMain.on("command", (e, d) => __awaiter(this, void 0, void 0, function* () {
+            const { cmd } = d;
+            if (cmd === "") {
+                return;
+            }
+            const regex = /(\w+)\((.*)\)/;
+            const matches = regex.exec(cmd);
+            if (!matches) {
+                return null;
+            }
+            const funcName = matches[1];
+            const parameter = matches[2].replace(/"/g, '');
+            const hasParameter = parameter.length > 0;
+            console.log(`appendFile("${parameter}")`);
+            switch (funcName) {
+                case "appendFile":
+                    if (!hasParameter) {
+                        return (0, Notifications_1.spawnNotification)(mainWindow, Notifications_1.NotificationsType.Error, "appendFile must have parameter!");
+                    }
+                    yield (0, JSRenderer_1.JSParser)(mainWindow, "./src/FileBar.js", `appendFile("${parameter}")`);
+                    break;
+                case "test":
+                    (0, Notifications_1.spawnNotification)(mainWindow, Notifications_1.NotificationsType.Info, "test case successfully done.");
+                    break;
+            }
+            electron_1.ipcMain.removeListener("commands", getCommandsDebug);
         }));
     });
 }

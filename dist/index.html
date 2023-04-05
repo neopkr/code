@@ -6,29 +6,108 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="sidebar.css">
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="const.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <title>Code</title>
 </head>
 
 <body>
     <div class="container">
-        <div class="sidebar">
-            <div class="sidebar-content">
-                <ul id="file-bar-content">
-                    <li class="folder-name dropdown" id="folder-name">Code: Code Editor</li>
-                    <ul class="dropdown-menu" id="file-content">
-                    </ul>
-                </ul>
+        <div id="command-palette">
+            <input type="text" placeholder="Escribe un comando...">
+            <ul></ul>
+        </div>
+        <div class="sb-container" style="user-select: none;">
+            <div class="icon-sb-container">
+                <div class="icon-sb">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#525252"
+                        class="bi bi-file-earmark icon" viewBox="0 0 16 16" title="File">
+                        <path
+                            d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z" />
+                    </svg>
+                </div>
+                <div class="icon-sb">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#525252"
+                        class="bi bi-search icon" viewBox="0 0 16 16" style="transform: rotate(90deg);" title="Search">
+                        <path
+                            d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="sb-explorer">
+                <p class="explorer-text">EXPLORADOR</p>
+                <div class="project-name font-p dropdown-btn" id="project-name"><i
+                        class="bi bi-caret-up-fill arrow-file"></i> Code</div>
+                <div class="files-container">
+                    <div class="folder file"><i class="bi bi-folder"></i> Render</div>
+                    <div class="in-folder file"><i class="bi bi-filetype-js"></i> Render.js</div>
+                    <div class="folder file"><i class="bi bi-folder"></i> Window</div>
+                    <div class="in-folder file"><i class="bi bi-filetype-js"></i> Window.js</div>
+                    <div class="file"><i class="bi bi-filetype-tsx"></i> File.ts</div>
+                    <div class="file"><i class="bi bi-filetype-js"></i> index.js</div>
+                    <div class="file"><i class="bi bi-filetype-html"></i> index.html</div>
+                    <div class="file"><i class="bi bi-filetype-css"></i> style.css</div>
+                    <div class="file"><i class="bi bi-filetype-md"></i> README.md</div>
+                </div>
             </div>
         </div>
-        <div class="editor-wrapper">
-            <div id="editor"></div>
+        <div class="editor-container">
+            <div class="editor" id="editor"></div>
         </div>
         <div class="notification" id="notifications-container"></div>
+        <div class="editor-info" style="user-select: none;">
+            <div class="line-numbers-container">
+                <span class="line-number" id="line-number"></span>
+            </div>
+            <span class="spaces" id="spaces"></span>
+            <span class="utf8" id="charset">UTF-8</span>
+            <span class="language" id="lang">JavaScript</span>
+        </div>
     </div>
-    <script src="./editor.js"></script>
-    <script src="./vanilla.js"></script>
-    <script src="./renderer.js"></script>
+    <script src="editor.js"></script>
+    <script src="files.js"></script>
+    <script>
+        const commandPalette = document.getElementById('command-palette');
+const commandInput = document.querySelector('#command-palette input');
+const commandList = document.querySelector('#command-palette ul');
+  document.addEventListener('keydown', (e) => {
+  // Comprueba si se presionaron las teclas 'Control', 'Shift' y 'KeyP' al mismo tiempo
+  if (e.ctrlKey && e.shiftKey && e.code === 'KeyP') {
+    commandPalette.classList.add('active');
+    commandInput.focus();
+  }
+});
+
+// Escucha el evento 'keydown' en el input
+commandInput.addEventListener('keydown', (e) => {
+  // Comprueba si se presionó la tecla 'Escape'
+  if (e.key === 'Escape') {
+    commandPalette.classList.remove('active');
+    commandInput.value = '';
+    commandList.innerHTML = '';
+  }
+
+  // Comprueba si se presionó la tecla 'Enter'
+  if (e.key === 'Enter') {
+    console.log(`Ejecutando comando: ${commandInput.value}`);
+    ipcRenderer.send("command", { cmd: commandInput.value });
+    commandPalette.classList.remove('active');
+    commandInput.value = '';
+    commandList.innerHTML = '';
+  }
+});
+
+// Escucha el evento 'click' en el documento
+document.addEventListener('click', (e) => {
+  // Comprueba si se hizo clic fuera del command palette
+  if (!commandPalette.contains(e.target)) {
+    commandPalette.classList.remove('active');
+    commandInput.value = '';
+    commandList.innerHTML = '';
+  }
+});
+    </script>
+    <script src="renderer.js"></script>
 </body>
 
 </html>

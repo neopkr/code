@@ -1,6 +1,6 @@
 const { ipcRenderer } = require('electron')
 
-const el = document.querySelector(".dropdown-menu");
+const el = document.querySelector(".files-container");
 
 el.addEventListener("click", (event) => {
   // Verifica si el elemento que generó el evento tiene la clase .file
