@@ -33,23 +33,31 @@ itemsI.forEach(function (item) {
     observer.observe(item, { attributes: true });
 });
 
-const items = document.querySelectorAll('.file');
+let items;
 
-items.forEach(item => {
-    item.addEventListener('click', (event) => {
+document.getElementsByClassName("files-container")[0].addEventListener("click", () => {
+    console.log("clic")
 
-        items.forEach(function (file) {
-            if (file.classList.contains("file-is-active") && file.tagName === "DIV") {
-                file.classList.remove("file-is-active")
+
+    items = document.querySelectorAll('.file');
+
+    items.forEach(item => {
+        item.addEventListener('click', (event) => {
+
+            items.forEach(function (file) {
+                if (file.classList.contains("file-is-active") && file.tagName === "DIV") {
+                    file.classList.remove("file-is-active")
+                }
+            });
+            if (event.target.classList.contains("file-is-active")) {
+                event.target.classList.remove('file-is-active');
+            } else {
+                event.target.classList.add('file-is-active');
             }
         });
-        if (event.target.classList.contains("file-is-active")) {
-            event.target.classList.remove('file-is-active');
-        } else {
-            event.target.classList.add('file-is-active');
-        }
     });
-});
+})
+
 
 document.addEventListener("click", event => {
     // Obtener elemento clickeado
@@ -72,6 +80,10 @@ document.addEventListener("click", event => {
     }
 });
 
+
+document.addEventListener("change", () => {
+    console.log("document changed")
+})
 
 const folders = document.querySelectorAll(".folder");
 const filesInFolders = document.querySelectorAll(".in-folder");

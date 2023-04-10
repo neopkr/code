@@ -90,6 +90,7 @@ function appendFile(file) {
   
   divFile.appendChild(iClass)
   file = isFolder ? file.replace("/", "") : file;
+  divFile.setAttribute("id", file) // set file id for search by code
   divFile.appendChild(document.createTextNode(` ${file}`)) // if i try padding would be better................................................xd
   fileContainer.appendChild(divFile);
 }

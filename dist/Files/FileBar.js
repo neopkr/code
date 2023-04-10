@@ -66,7 +66,7 @@ function ObtainFilesInExplorer(mainWindow) {
                 });
                 (0, Notifications_1.spawnNotificationLogger)(mainWindow, Notifications_1.NotificationsType.Warning, `Changing folder: ${(0, ConvertSlash_1.ReplaceBackSlash)(currentFolder.relativePath)} is new folder.`);
                 SetFolderName(mainWindow, currentFolder);
-                console.log(yield WReadFilesFromFolder__(folderPath));
+                setFilesOnCode(yield WReadFilesFromFolder__(folderPath));
             }
             else {
                 // check folder path is same
@@ -98,7 +98,7 @@ function ObtainFilesInExplorer(mainWindow) {
                 yield (0, Imports_1.onChangeDirDeleteImports)(mainWindow);
                 (0, Notifications_1.spawnNotificationLogger)(mainWindow, Notifications_1.NotificationsType.Warning, `Changing folder: ${(0, ConvertSlash_1.ReplaceBackSlash)(currentFolder.relativePath)} is new folder.`);
                 SetFolderName(mainWindow, currentFolder);
-                console.log(yield WReadFilesFromFolder__(folderPath));
+                setFilesOnCode(yield WReadFilesFromFolder__(folderPath));
                 yield (0, Imports_1.onChangeDirDeleteImports)(mainWindow);
             }
         }
@@ -188,6 +188,39 @@ function WReadFilesFromFolder__(folderPath) {
         }
         return result;
     });
+}
+function setFilesOnCode(files) {
+    let mainFolderFiles = [];
+    let otherFiles = [];
+    for (let i = 0; i < files.length; i++) {
+        let element = files[i];
+        let skipZero = false;
+        if (element[0] === getFolderName(currentFolder.name)) {
+            skipZero = true;
+        }
+        if (!skipZero) {
+            for (let e = 1; e < element.length; e++) {
+                if (element[e].includes(".")) {
+                    mainFolderFiles.push(element[e]);
+                }
+                else {
+                    otherFiles.push(element[0] + "/" + element[e]);
+                }
+            }
+        }
+        else {
+            for (let e = 0; e < element.length; e++) {
+                if (element[e].includes(".")) {
+                    mainFolderFiles.push(element[e]);
+                }
+                else {
+                    otherFiles.push(element[0] + "/" + element[e]);
+                }
+            }
+        }
+    }
+    console.log(mainFolderFiles);
+    console.log(otherFiles);
 }
 function SetFolderName(mainWindow, folder) {
     (0, JSRenderer_1.JSParser)(mainWindow, "./src/FileBar.js", `setFolderName(${JSON.stringify(folder.name)});`);

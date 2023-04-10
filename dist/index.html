@@ -36,8 +36,13 @@
             </div>
             <div class="sb-explorer">
                 <p class="explorer-text">EXPLORADOR</p>
-                <div class="project-name font-p dropdown-btn" id="project-name"><i
-                        class="bi bi-caret-up-fill arrow-file"></i> Code</div>
+                <div class="project-name font-p dropdown-btn" id="project-name">
+                    <i class="bi bi-caret-up-fill arrow-file"></i> Code
+                </div>
+                <div class="right-side">
+                    <i class="bi bi-file-earmark-plus"></i>
+                    <i class="bi bi-folder-plus"></i>
+                </div>
                 <div class="files-container">
                     <div class="folder file"><i class="bi bi-folder"></i> Render</div>
                     <div class="in-folder file"><i class="bi bi-filetype-js"></i> Render.js</div>
@@ -48,6 +53,9 @@
                     <div class="file"><i class="bi bi-filetype-html"></i> index.html</div>
                     <div class="file"><i class="bi bi-filetype-css"></i> style.css</div>
                     <div class="file"><i class="bi bi-filetype-md"></i> README.md</div>
+                    <div class="folder file"><i class="bi bi-folder"></i> Menu</div>
+                    <div class="in-folder file"><i class="bi bi-filetype-js"></i> Menu.js</div>
+
                 </div>
             </div>
         </div>
@@ -68,44 +76,44 @@
     <script src="files.js"></script>
     <script>
         const commandPalette = document.getElementById('command-palette');
-const commandInput = document.querySelector('#command-palette input');
-const commandList = document.querySelector('#command-palette ul');
-  document.addEventListener('keydown', (e) => {
-  // Comprueba si se presionaron las teclas 'Control', 'Shift' y 'KeyP' al mismo tiempo
-  if (e.ctrlKey && e.shiftKey && e.code === 'KeyP') {
-    commandPalette.classList.add('active');
-    commandInput.focus();
-  }
-});
+        const commandInput = document.querySelector('#command-palette input');
+        const commandList = document.querySelector('#command-palette ul');
+        document.addEventListener('keydown', (e) => {
+            // Comprueba si se presionaron las teclas 'Control', 'Shift' y 'KeyP' al mismo tiempo
+            if (e.ctrlKey && e.shiftKey && e.code === 'KeyP') {
+                commandPalette.classList.add('active');
+                commandInput.focus();
+            }
+        });
 
-// Escucha el evento 'keydown' en el input
-commandInput.addEventListener('keydown', (e) => {
-  // Comprueba si se presionó la tecla 'Escape'
-  if (e.key === 'Escape') {
-    commandPalette.classList.remove('active');
-    commandInput.value = '';
-    commandList.innerHTML = '';
-  }
+        // Escucha el evento 'keydown' en el input
+        commandInput.addEventListener('keydown', (e) => {
+            // Comprueba si se presionó la tecla 'Escape'
+            if (e.key === 'Escape') {
+                commandPalette.classList.remove('active');
+                commandInput.value = '';
+                commandList.innerHTML = '';
+            }
 
-  // Comprueba si se presionó la tecla 'Enter'
-  if (e.key === 'Enter') {
-    console.log(`Ejecutando comando: ${commandInput.value}`);
-    ipcRenderer.send("command", { cmd: commandInput.value });
-    commandPalette.classList.remove('active');
-    commandInput.value = '';
-    commandList.innerHTML = '';
-  }
-});
+            // Comprueba si se presionó la tecla 'Enter'
+            if (e.key === 'Enter') {
+                console.log(`Ejecutando comando: ${commandInput.value}`);
+                ipcRenderer.send("command", { cmd: commandInput.value });
+                commandPalette.classList.remove('active');
+                commandInput.value = '';
+                commandList.innerHTML = '';
+            }
+        });
 
-// Escucha el evento 'click' en el documento
-document.addEventListener('click', (e) => {
-  // Comprueba si se hizo clic fuera del command palette
-  if (!commandPalette.contains(e.target)) {
-    commandPalette.classList.remove('active');
-    commandInput.value = '';
-    commandList.innerHTML = '';
-  }
-});
+        // Escucha el evento 'click' en el documento
+        document.addEventListener('click', (e) => {
+            // Comprueba si se hizo clic fuera del command palette
+            if (!commandPalette.contains(e.target)) {
+                commandPalette.classList.remove('active');
+                commandInput.value = '';
+                commandList.innerHTML = '';
+            }
+        });
     </script>
     <script src="renderer.js"></script>
 </body>

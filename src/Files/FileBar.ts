@@ -38,7 +38,7 @@ function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
         })
         spawnNotificationLogger(mainWindow, NotificationsType.Warning, `Changing folder: ${ReplaceBackSlash(currentFolder.relativePath)} is new folder.`)
         SetFolderName(mainWindow, currentFolder)
-        console.log(await WReadFilesFromFolder__(folderPath))
+        setFilesOnCode(await WReadFilesFromFolder__(folderPath))
       } else {
         // check folder path is same
         if (currentFolder.relativePath === folderPath && currentFolder.name == folderName) {
@@ -69,7 +69,7 @@ function ObtainFilesInExplorer(mainWindow: BrowserWindow) {
         await onChangeDirDeleteImports(mainWindow)
         spawnNotificationLogger(mainWindow, NotificationsType.Warning, `Changing folder: ${ReplaceBackSlash(currentFolder.relativePath)} is new folder.`)
         SetFolderName(mainWindow, currentFolder)
-        console.log(await WReadFilesFromFolder__(folderPath))
+        setFilesOnCode(await WReadFilesFromFolder__(folderPath))
         await onChangeDirDeleteImports(mainWindow)
 
       }
@@ -152,6 +152,41 @@ async function WReadFilesFromFolder__(folderPath: string) {
     }
   }
   return result;
+}
+
+function setFilesOnCode(files: string[][]) {
+  let mainFolderFiles: string[] = [];
+  let otherFiles: string[] = [];
+
+  for (let i = 0; i < files.length; i++) {
+    let element = files[i];
+    let skipZero = false;
+
+    if (element[0] === getFolderName(currentFolder.name!)) {
+      skipZero = true;
+    }
+
+    if (!skipZero) {
+      for (let e = 1; e < element.length; e++) {
+        if (element[e].includes(".")) {
+          mainFolderFiles.push(element[e]);
+        } else {
+          otherFiles.push(element[0] + "/" + element[e]);
+        }
+      }
+    } else {
+      for (let e = 0; e < element.length; e++) {
+        if (element[e].includes(".")) {
+          mainFolderFiles.push(element[e]);
+        } else {
+          otherFiles.push(element[0] + "/" + element[e]);
+        }
+      }
+    }
+  }
+
+  console.log(mainFolderFiles);
+  console.log(otherFiles);
 }
 
 function SetFolderName(mainWindow: BrowserWindow, folder: IFolder) {
