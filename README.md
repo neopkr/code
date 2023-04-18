@@ -48,6 +48,7 @@ If you want contribute, submit a pull request! All contributions are accepted.
 "Code", Licensed under the [MIT](https://github.com/neopkr/code/blob/main/LICENSE) license.
 
 ## Not forget
+Crear version ipad
 If u seeing this is because i need put it in my code but i'm to lazy :)
 ```js
    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
